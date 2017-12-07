@@ -65,7 +65,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     private ValueEventListener valueEventListener;
     private ChildEventListener childEventListener;
 
-    private TextView tvrtTest;
+    //private TextView tvrtTest;
 
 
     public FragmentMap() {
@@ -115,7 +115,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
         // Note: State of variable initialized here could not be saved
         //       in onSavedInstanceState
         CreateMap(rootView,savedInstanceState);
-        tvrtTest = rootView.findViewById(R.id.tv_rtTest);
+        //tvrtTest = rootView.findViewById(R.id.tv_rtTest);
     }
 
     private void SetCurrentLocation() {
@@ -177,7 +177,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
                                 mMarker.setTag(0);
 
 
-                                tvrtTest.setText(safePlace.getSafename());
+                                //tvrtTest.setText(safePlace.getSafename());
                                 Log.i("Value", "Data : " + safePlace.getSafename()+ ","+ safePlace.getLat() + "," + safePlace.getLng());
                             }
                         }
