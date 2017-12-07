@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.msk.finalproject.R;
@@ -36,6 +37,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +64,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
     private ValueEventListener valueEventListener;
     private ChildEventListener childEventListener;
+
+    private TextView tvrtTest;
 
 
     public FragmentMap() {
@@ -110,6 +115,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
         // Note: State of variable initialized here could not be saved
         //       in onSavedInstanceState
         CreateMap(rootView,savedInstanceState);
+        tvrtTest = rootView.findViewById(R.id.tv_rtTest);
     }
 
     private void SetCurrentLocation() {
@@ -164,9 +170,14 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
                             if (safePlace == null) {
                                 Toast.makeText(getContext(), "Error: could not fetch data.", Toast.LENGTH_LONG).show();
                             } else {
-                                mMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(safePlace.getLat(), safePlace.getLng()))
+                                LatLng latLng = new LatLng(safePlace.getLat(),safePlace.getLng());
+                                mMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(latLng)
                                         .title(safePlace.getSafename()));
+                                mMarker.setTag(0);
+
+
+                                tvrtTest.setText(safePlace.getSafename());
                                 Log.i("Value", "Data : " + safePlace.getSafename()+ ","+ safePlace.getLat() + "," + safePlace.getLng());
                             }
                         }
