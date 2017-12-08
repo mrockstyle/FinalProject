@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-/**
- * Created by nuuneoi on 11/16/2014.
- */
 public class FragmentMenu extends Fragment implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
@@ -37,8 +35,7 @@ public class FragmentMenu extends Fragment implements View.OnClickListener {
     private DatabaseReference mUserRef;
     private User user;
 
-
-    private Button btn_signOut;
+    private Button btn_editData,btn_map,btn_signOut;
     private TextView tv_Fname,tv_Lname;
 
     public FragmentMenu() {
@@ -86,10 +83,36 @@ public class FragmentMenu extends Fragment implements View.OnClickListener {
         //       in onSavedInstanceState
         tv_Fname = rootView.findViewById(R.id.tv_Fname);
         tv_Lname = rootView.findViewById(R.id.tv_Lname);
+        btn_editData = rootView.findViewById(R.id.btn_editData);
+        btn_map = rootView.findViewById(R.id.btn_map);
         btn_signOut = rootView.findViewById(R.id.btn_signOut);
+        btn_editData.setOnClickListener(this);
+        btn_map.setOnClickListener(this);
         btn_signOut.setOnClickListener(this);
         showProfile();
     }
+
+    @Override
+    public void onClick(View view) {
+        int v = view.getId();
+        if (v == R.id.btn_signOut){
+            signOut();
+        }else if (v == R.id.btn_editData){
+            FragmentEditData fragmentEditData = new FragmentEditData();
+            changeFragment(R.id.mainContainer,fragmentEditData);
+        }else if (v == R.id.btn_map){
+            FragmentMap fragmentMap = new FragmentMap();
+            changeFragment(R.id.mainContainer,fragmentMap);
+        }
+    }
+
+    private void changeFragment(int id,Fragment fragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(id,fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
 
     private void showProfile() {
 
@@ -114,6 +137,13 @@ public class FragmentMenu extends Fragment implements View.OnClickListener {
 
     }
 
+    private void signOut() {
+        mAuth.signOut();
+
+        getActivity().finish();
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -124,21 +154,5 @@ public class FragmentMenu extends Fragment implements View.OnClickListener {
     @SuppressWarnings("UnusedParameters")
     private void onRestoreInstanceState(Bundle savedInstanceState) {
         // Restore Instance (Fragment level's variables) State here
-    }
-
-    private void signOut() {
-        mAuth.signOut();
-
-        getActivity().finish();
-        Intent intent = new Intent(getContext(), LoginActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View view) {
-        int v = view.getId();
-        if (v == R.id.btn_signOut){
-            signOut();
-        }
     }
 }

@@ -9,15 +9,14 @@ import android.view.ViewGroup;
 
 import com.example.msk.finalproject.R;
 
+public class FragmentWaterLevel extends Fragment {
 
-public class FragmentTemplateFull extends Fragment {
-
-    public FragmentTemplateFull() {
+    public FragmentWaterLevel() {
         super();
     }
 
-    public static FragmentTemplateFull newInstance() {
-        FragmentTemplateFull fragment = new FragmentTemplateFull();
+    public static FragmentWaterLevel newInstance() {
+        FragmentWaterLevel fragment = new FragmentWaterLevel();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -35,7 +34,7 @@ public class FragmentTemplateFull extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_water_level, container, false);
         initInstances(rootView, savedInstanceState);
         return rootView;
     }

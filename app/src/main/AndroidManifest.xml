@@ -18,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".controller.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +32,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyACDIoaVtQRdvRcwTpVMvMy6MnyKQiM4Rg" />
+            android:value="AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk" />
 
         <activity android:name=".controller.MainActivity" />
         <activity android:name=".controller.FirebasePracticeActivity"></activity>

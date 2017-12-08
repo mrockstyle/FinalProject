@@ -29,9 +29,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-/**
- * Created by nuuneoi on 11/16/2014.
- */
 public class FragmentLogIn extends Fragment implements View.OnClickListener {
 
     private FirebaseAuth mAuth;

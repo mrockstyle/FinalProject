@@ -27,9 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-/**
- * Created by nuuneoi on 11/16/2014.
- */
 public class FragmentSignUp extends Fragment implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
@@ -124,7 +121,7 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
 
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d("Test", "createUserWithEmail:success");
+                            Log.d("User", "createUserWithEmail:success");
                             Toast.makeText(getContext().getApplicationContext(), "Create accout success.",
                                     Toast.LENGTH_SHORT).show();
 
@@ -135,7 +132,7 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w("Test", "createUserWithEmail:failure", task.getException());
+                            Log.w("User", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
 

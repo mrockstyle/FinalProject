@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.example.msk.finalproject.R;
 import com.example.msk.finalproject.fragment.FragmentMap;
 import com.example.msk.finalproject.fragment.FragmentMenu;
+import com.example.msk.finalproject.fragment.FragmentWaterLevel;
 import com.google.android.gms.maps.MapFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.mainContainer, FragmentMap.newInstance())
+                    .add(R.id.mainContainer, FragmentWaterLevel.newInstance())
                     .add(R.id.menuContainer, FragmentMenu.newInstance())
                     .commit();
         }

@@ -2,8 +2,9 @@ package com.example.msk.finalproject.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -14,15 +15,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.msk.finalproject.R;
+import com.example.msk.finalproject.controller.Constant;
 import com.example.msk.finalproject.dao.SafePlace;
-import com.example.msk.finalproject.dao.Test;
-import com.example.msk.finalproject.dao.User;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -31,41 +35,37 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
-/**
- * Created by nuuneoi on 11/16/2014.
- */
 public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
-    private DatabaseReference mRootRef,mSafePlaceRef,mTestRef;
+    //Firebase
+    private DatabaseReference mRootRef,mSafePlaceRef;
+    private ValueEventListener valueEventListener;
+    private SafePlace safePlace;
 
-
+    //GoogleMap
+    private LatLng markerLatLng;
     private MapView mapView;
     private GoogleMap mMap;
     private Marker mMarker;
-    private LocationManager locationManager;
     private double lat,lng;
     private FusedLocationProviderClient mFusedLocationClient;
+    //private PlaceAutocompleteFragment autocompleteFragment;
 
-    private ValueEventListener valueEventListener;
-    private ChildEventListener childEventListener;
-
-    //private TextView tvrtTest;
+    //Variable
+    private List<Address> addressList;
+    private int markerTag=0;
+    private String placeName;
 
 
     public FragmentMap() {
@@ -105,7 +105,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mSafePlaceRef = mRootRef.child("safeplace");
-
+        addressList = new ArrayList<>();
 
     }
 
@@ -115,7 +115,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
         // Note: State of variable initialized here could not be saved
         //       in onSavedInstanceState
         CreateMap(rootView,savedInstanceState);
-        //tvrtTest = rootView.findViewById(R.id.tv_rtTest);
+        /*autocompleteFragment = (PlaceAutocompleteFragment)
+                getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);*/
     }
 
     private void SetCurrentLocation() {
@@ -143,14 +144,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         SetCurrentLocation();
         getDeviceLocation();
-        addMarker();
-
-    }
-
-    private void addMarker() {
         readSafePlaceData();
-    }
+        //setSearchBar();
 
+    }
 
     private void readSafePlaceData() {
 
@@ -174,11 +171,9 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
                                 mMarker = mMap.addMarker(new MarkerOptions()
                                         .position(latLng)
                                         .title(safePlace.getSafename()));
-                                mMarker.setTag(0);
-
-
-                                //tvrtTest.setText(safePlace.getSafename());
-                                Log.i("Value", "Data : " + safePlace.getSafename()+ ","+ safePlace.getLat() + "," + safePlace.getLng());
+                                mMarker.setTag(markerTag);
+                                markerTag++; //increase tag;
+                                Log.i("Value", "Data : " + mMarker.getTag()+ "," + safePlace.getSafename()+ ","+ safePlace.getLat() + "," + safePlace.getLng());
                             }
                         }
 
@@ -235,5 +230,9 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
         if (mSafePlaceRef != null){
             mSafePlaceRef.removeEventListener(valueEventListener);
         }
+    }
+
+    public GoogleMap getmMap() {
+        return mMap;
     }
 }
