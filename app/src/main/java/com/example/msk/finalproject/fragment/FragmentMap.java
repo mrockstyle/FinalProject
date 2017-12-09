@@ -60,7 +60,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     private Marker mMarker;
     private double lat,lng;
     private FusedLocationProviderClient mFusedLocationClient;
-    //private PlaceAutocompleteFragment autocompleteFragment;
 
     //Variable
     private List<Address> addressList;
@@ -167,13 +166,13 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
                             if (safePlace == null) {
                                 Toast.makeText(getContext(), "Error: could not fetch data.", Toast.LENGTH_LONG).show();
                             } else {
-                                LatLng latLng = new LatLng(safePlace.getLat(),safePlace.getLng());
+                                LatLng latLng = new LatLng(safePlace.getPlace_lat(),safePlace.getPlace_lng());
                                 mMarker = mMap.addMarker(new MarkerOptions()
                                         .position(latLng)
-                                        .title(safePlace.getSafename()));
+                                        .title(safePlace.getPlace_name()));
                                 mMarker.setTag(markerTag);
                                 markerTag++; //increase tag;
-                                Log.i("Value", "Data : " + mMarker.getTag()+ "," + safePlace.getSafename()+ ","+ safePlace.getLat() + "," + safePlace.getLng());
+                                Log.i("Value", "Data : " + mMarker.getTag()+ "," + safePlace.getPlace_name()+ ","+ safePlace.getPlace_lat() + "," + safePlace.getPlace_lng());
                             }
                         }
 
@@ -232,7 +231,4 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public GoogleMap getmMap() {
-        return mMap;
-    }
 }

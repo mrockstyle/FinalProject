@@ -87,14 +87,10 @@ public class FragmentEditData extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btn_save){
-            writeSafePlaceData();
+            //writeSafePlaceData();
         }
     }
 
-    private void writeSafePlaceData() {
-        safePlace = new SafePlace(edt_name.getText().toString(),lat,lng,0,"");
-        mSafePlaceRef.push().setValue(safePlace);
-    }
 
 
     @Override

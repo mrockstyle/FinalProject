@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">FinalProject</string>
-    <string name="open_drawer">Open</string>
-    <string name="close_drawer">Close</string>
+
+    <string-array name="planets_array">
+        <item>Water level</item>
+        <item>Map</item>
+        <item>Edit Data</item>
+        <item>Sign Out</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
 </resources>

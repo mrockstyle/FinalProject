@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -29,15 +30,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class FragmentSignUp extends Fragment implements View.OnClickListener {
 
+    //Firebase
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private DatabaseReference mRootRef,mUserRef;
     private User user;
 
-    EditText Edt_Email,Edt_Password,Edt_Fname,Edt_Lname,Edt_Role;
-    private String Email,Password,Fname,Lname,Role;
-    Button btn_SignUp;
+    //Variables
+    private EditText Edt_Email,Edt_Password,Edt_Fname,Edt_Lname,Edt_Role;
+    private CheckBox cb_admin;
+    private String Email,Password,Fname,Lname;
+    private Button btn_SignUp;
     private ProgressDialog progressDialog;
+    private Boolean isAdmin = false;
 
     public FragmentSignUp() {
         super();
@@ -91,7 +96,7 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
         Edt_Lname = rootView.findViewById(R.id.Edt_LName);
         Edt_Email = rootView.findViewById(R.id.Edt_Email);
         Edt_Password = rootView.findViewById(R.id.Edt_Password);
-        Edt_Role = rootView.findViewById(R.id.Edt_Role);
+        cb_admin = rootView.findViewById(R.id.cb_admin);
         btn_SignUp = rootView.findViewById(R.id.BtnSignUp);
         btn_SignUp.setOnClickListener(this);
     }
@@ -127,6 +132,10 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
 
                             FirebaseUser userID = task.getResult().getUser();
                             saveUserInformation(userID.getUid());
+
+                            if (mAuth != null){
+                                mAuth.signOut();
+                            }
 
                             goToLogIn();
 
@@ -176,9 +185,12 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
         Password = Edt_Password.getText().toString();
         Fname = Edt_Fname.getText().toString();
         Lname = Edt_Lname.getText().toString();
-        Role = Edt_Role.getText().toString();
 
-        user = new User(Email,Password,Fname,Lname,Role);
+        if (cb_admin.isChecked()){
+            isAdmin = true;
+        }
+
+        user = new User(Email,Password,Fname,Lname,isAdmin);
         mUserRef.child(userID).setValue(user);
     }
 

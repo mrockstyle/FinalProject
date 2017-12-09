@@ -8,41 +8,35 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
 public class SafePlace {
-    private String safename;
-    private Double lat;
-    private Double lng;
-    private Integer contain;
-    private String userID;
+    private String place_name;
+    private Double place_lat;
+    private Double place_lng;
+    private Integer place_contain;
 
     public SafePlace(){
 
     }
 
-    public SafePlace(String safename, Double lat, Double lng, Integer contain, String userID) {
-        this.safename = safename;
-        this.lat = lat;
-        this.lng = lng;
-        this.contain = contain;
-        this.userID = userID;
+    public SafePlace(String place_name, Double place_lat, Double place_lng, Integer place_contain) {
+        this.place_name = place_name;
+        this.place_lat = place_lat;
+        this.place_lng = place_lng;
+        this.place_contain = place_contain;
     }
 
-    public String getSafename() {
-        return safename;
+    public String getPlace_name() {
+        return place_name;
     }
 
-    public Double getLat() {
-        return lat;
+    public Double getPlace_lat() {
+        return place_lat;
     }
 
-    public Double getLng() {
-        return lng;
+    public Double getPlace_lng() {
+        return place_lng;
     }
 
-    public Integer getContain() {
-        return contain;
-    }
-
-    public String getUserID() {
-        return userID;
+    public Integer getPlace_contain() {
+        return place_contain;
     }
 }

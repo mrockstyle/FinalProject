@@ -35,7 +35,6 @@
             android:value="AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk" />
 
         <activity android:name=".controller.MainActivity" />
-        <activity android:name=".controller.FirebasePracticeActivity"></activity>
     </application>
 
 </manifest>

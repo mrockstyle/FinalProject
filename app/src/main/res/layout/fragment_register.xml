@@ -34,15 +34,14 @@
         android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <EditText
+    <CheckBox
+        android:id="@+id/cb_admin"
         android:layout_marginTop="20dp"
-        android:id="@+id/Edt_Role"
-        android:hint="Role"
-        android:inputType="text"
-        android:layout_width="match_parent"
+        android:text="Sign up as Admin"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <Button
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="100dp"
         android:id="@+id/BtnSignUp"
         android:text="Sign Up"
         android:layout_gravity="center"

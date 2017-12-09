@@ -15,6 +15,8 @@ public class FragmentWaterLevel extends Fragment {
         super();
     }
 
+    public static final String ARG_WATER_NUMBER = "water_number";
+
     public static FragmentWaterLevel newInstance() {
         FragmentWaterLevel fragment = new FragmentWaterLevel();
         Bundle args = new Bundle();

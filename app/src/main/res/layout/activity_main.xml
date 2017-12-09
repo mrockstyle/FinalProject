@@ -28,18 +28,32 @@
     </LinearLayout>
 
     <!-- Menu -->
+
     <LinearLayout
-        android:layout_gravity="start"
-        android:background="#ffffff"
+        android:id="@+id/menuContainer"
+        android:orientation="vertical"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_gravity="start"
+        android:background="#111">
 
-        <FrameLayout
-            android:id="@+id/menuContainer"
+        <TextView
+            android:id="@+id/tv_Fname"
+            android:textSize="30sp"
+            android:freezesText="true"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </FrameLayout>
+            android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp" />
+
     </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>
