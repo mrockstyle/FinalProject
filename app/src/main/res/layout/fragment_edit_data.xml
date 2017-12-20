@@ -3,24 +3,60 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edt_placeName"
-        android:hint="name"
+
+    <TextView
+        android:text="Location"
+        android:textSize="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/tv_lat"
-        android:text="Latitude : "
+    <Spinner
+        android:id="@+id/spinner_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </Spinner>
+
+    <EditText
+        android:id="@+id/edt_height"
+        android:hint="height"
+        android:layout_marginTop="30dp"
+        android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/tv_lng"
-        android:text="Longtitude : "
+
+
+    <EditText
+        android:id="@+id/edt_normal"
+        android:hint="normal point"
+        android:layout_marginTop="30dp"
+        android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/edt_monitor"
+        android:hint="monitor point"
+        android:layout_marginTop="30dp"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/edt_alert"
+        android:hint="alert point"
+        android:layout_marginTop="30dp"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/edt_critical"
+        android:hint="critical point"
+        android:layout_marginTop="30dp"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:text="save"
+        android:layout_marginTop="20dp"
         android:id="@+id/btn_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

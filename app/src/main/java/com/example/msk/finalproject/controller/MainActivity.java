@@ -1,6 +1,7 @@
 package com.example.msk.finalproject.controller;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,30 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.msk.finalproject.R;
-import com.example.msk.finalproject.dao.User;
 import com.example.msk.finalproject.fragment.FragmentEditData;
 import com.example.msk.finalproject.fragment.FragmentMap;
+import com.example.msk.finalproject.fragment.FragmentReport;
 import com.example.msk.finalproject.fragment.FragmentWaterLevel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.inthecheesefactory.thecheeselibrary.manager.Contextor;
+import com.example.msk.finalproject.util.NotificationService;
 
 
 public class MainActivity extends AppCompatActivity {
-    //Firebase
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    private FirebaseDatabase database;
-    private DatabaseReference mUserRef;
-    private User user;
 
     //Variables
     private Toolbar toolbar;
@@ -47,10 +34,16 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private CharSequence mTitle;
-    private String[] mPlanetTitles;
+    private String[] Menu;
 
     private TextView tv_Fname;
     private LinearLayout menuDrawerlayout;
+    private Integer userID;
+    private String Firstname;
+    private String Lastname;
+    private Boolean isAdmin;
+
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,49 +59,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        //Firebase
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        mUserRef = database.getReference("users");
-        user = new User();
-
-        toolbar = findViewById(R.id.toolbar); // ควรประกาศเป็นอับดับแรก
+        getUserPref(); //อ่านข้อมูล user ที่ login ไว้
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); //set ให้ actionbar กลายเป็น toolbar
         createDrawerLayout();
+
+        startService(new Intent(this, NotificationService.class)); // เริ่ม service การแจ้งเตือนระดับน้ำ
 
         tv_Fname = findViewById(R.id.tv_Fname);
         showUserProfile();
 
     }
 
+    private void getUserPref() {
+        preferences = getSharedPreferences(Constant.USER_PREF,0);
+        userID = preferences.getInt(Constant.USER_ID,0);
+        Firstname = preferences.getString(Constant.USER_FNAME,null);
+        Lastname = preferences.getString(Constant.USER_LNAME,null);
+        isAdmin = preferences.getBoolean(Constant.IS_ADMIN,true);
+    }
+
 
     private void showUserProfile() {
 
-        mUserRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
-                if (user == null) {
-                    Toast.makeText(Contextor.getInstance().getContext(), "Error: could not fetch user.", Toast.LENGTH_LONG).show();
-                } else {
-                    tv_Fname.setText("Hello "+user.getFirstname());
-                    //Log.i("Value","User : "+user);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Error", databaseError.getMessage());
-            }
-        });
+        tv_Fname.setText(Firstname);
+        Log.i("Value","userID : "+userID);
+        Log.i("Value","Firstname : "+Firstname);
+        Log.i("Value","Lastname : "+Lastname);
+        Log.i("Value","isAdmin : "+isAdmin);
 
     }
 
 
     private void createDrawerLayout() {
         mTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+
+        if (isAdmin){
+            Menu = getResources().getStringArray(R.array.admin_menu);
+        }else {
+            Menu = getResources().getStringArray(R.array.user_menu);
+        }
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         menuDrawerlayout = findViewById(R.id.menuContainer);
@@ -117,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.listview_menu, mPlanetTitles));
+                R.layout.listview_menu, Menu));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -153,34 +144,65 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectItem(int position) {
         // update the main content by replacing fragments
-        switch (position){
-            case 0 : getSupportFragmentManager()
+        if (isAdmin){
+            switch (position){
+                case 0 : getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainContainer,FragmentWaterLevel.newInstance())
                         .commit();
                     break;
-            case 1 : getSupportFragmentManager()
+                case 1 : getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainContainer,FragmentMap.newInstance())
                         .commit();
                     break;
-            case 2 : getSupportFragmentManager()
+                case 2 : getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainContainer, FragmentEditData.newInstance())
                         .commit();
                     break;
-            case 3 : mAuth.signOut();
-                        finish();
-                        Intent intent = new Intent(this, LoginActivity.class);
-                        startActivity(intent);
+                case 3 : getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer, FragmentReport.newInstance())
+                        .commit();
                     break;
+                case 4 : signOut();
+                    finish();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    break;
+            }
+        }else {
+            switch (position){
+                case 0 : getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer,FragmentWaterLevel.newInstance())
+                        .commit();
+                    break;
+                case 1 : getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer,FragmentMap.newInstance())
+                        .commit();
+                    break;
+                case 2 : getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer, FragmentReport.newInstance())
+                        .commit();
+                    break;
+                case 3 : signOut();
+                    finish();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    break;
+            }
         }
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        setTitle(Menu[position]);
         mDrawerLayout.closeDrawer(menuDrawerlayout);
     }
+
 
     @Override
     public void setTitle(CharSequence title) {
@@ -205,6 +227,15 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private void signOut() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constant.USER_ID,0);
+        editor.putString(Constant.USER_FNAME,null);
+        editor.putString(Constant.USER_LNAME,null);
+        editor.putBoolean(Constant.IS_LOGGED_IN,false);
+        editor.apply();
     }
 
 }

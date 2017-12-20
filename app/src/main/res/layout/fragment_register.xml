@@ -22,8 +22,15 @@
         android:layout_height="wrap_content" />
     <EditText
         android:layout_marginTop="20dp"
-        android:id="@+id/Edt_Email"
-        android:hint="Email"
+        android:id="@+id/Edt_tel"
+        android:hint="Tel."
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:layout_marginTop="20dp"
+        android:id="@+id/Edt_Username"
+        android:hint="Username"
         android:inputType="text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

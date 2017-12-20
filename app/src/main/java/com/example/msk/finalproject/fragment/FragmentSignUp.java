@@ -1,7 +1,9 @@
 package com.example.msk.finalproject.fragment;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,35 +16,32 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.msk.finalproject.R;
-import com.example.msk.finalproject.dao.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.msk.finalproject.controller.Constant;
+import com.example.msk.finalproject.manager.HttpManager;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FragmentSignUp extends Fragment implements View.OnClickListener {
-
-    //Firebase
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    private DatabaseReference mRootRef,mUserRef;
-    private User user;
-
     //Variables
-    private EditText Edt_Email,Edt_Password,Edt_Fname,Edt_Lname,Edt_Role;
+    private EditText Edt_Username,Edt_Password,Edt_Fname,Edt_Lname,Edt_tel;
     private CheckBox cb_admin;
     private String Email,Password,Fname,Lname;
     private Button btn_SignUp;
     private ProgressDialog progressDialog;
-    private Boolean isAdmin = false;
+    private Integer isAdmin = 0; //0 -> user //1 -> admin
+    private AlertDialog.Builder ad;
+    private String strStatusID = "0";
+    private String strError = "Unknow User!";
 
     public FragmentSignUp() {
         super();
@@ -75,13 +74,6 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
     @SuppressWarnings("UnusedParameters")
     private void init(Bundle savedInstanceState) {
         // Init Fragment level's variable(s) here
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        mRootRef = FirebaseDatabase.getInstance().getReference();
-        mUserRef = mRootRef.child("users");
-
-
-        user = new User();
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -94,7 +86,8 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
 
         Edt_Fname = rootView.findViewById(R.id.Edt_FName);
         Edt_Lname = rootView.findViewById(R.id.Edt_LName);
-        Edt_Email = rootView.findViewById(R.id.Edt_Email);
+        Edt_tel = rootView.findViewById(R.id.Edt_tel);
+        Edt_Username = rootView.findViewById(R.id.Edt_Username);
         Edt_Password = rootView.findViewById(R.id.Edt_Password);
         cb_admin = rootView.findViewById(R.id.cb_admin);
         btn_SignUp = rootView.findViewById(R.id.BtnSignUp);
@@ -105,60 +98,84 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         int v = view.getId();
         if (v == R.id.BtnSignUp){
-            createAccount(Edt_Email.getText().toString(), Edt_Password.getText().toString());
+            createAccount(Edt_Username.getText().toString()
+                    , Edt_Password.getText().toString()
+                    , Edt_Fname.getText().toString()
+                    , Edt_Lname.getText().toString()
+                    , Edt_tel.getText().toString());
         }
     }
 
-    private void createAccount(String email, String password) {
+    private void createAccount(String username, String password, String fname,String lname,String tel) {
         if (!validateForm()){
             return;
         }
 
+        //Dialog
+        ad = new AlertDialog.Builder(getActivity());
+        ad.setTitle("Error!");
+        ad.setIcon(android.R.drawable.btn_star_big_on);
+        ad.setPositiveButton("Close",null);
+
         progressDialog.setMessage("Registering User...");
         progressDialog.show();
 
-        mAuth.createUserWithEmailAndPassword(email,password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        progressDialog.dismiss();
+        if (cb_admin.isChecked()){
+            isAdmin = 1;
+        }
 
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("User", "createUserWithEmail:success");
-                            Toast.makeText(getContext().getApplicationContext(), "Create accout success.",
-                                    Toast.LENGTH_SHORT).show();
+        //saveUserData
+        final List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("password", password));
+        params.add(new BasicNameValuePair("firstname", fname));
+        params.add(new BasicNameValuePair("lastname", lname));
+        params.add(new BasicNameValuePair("tel", tel));
+        params.add(new BasicNameValuePair("isAdmin",String.valueOf(isAdmin)));
 
-                            FirebaseUser userID = task.getResult().getUser();
-                            saveUserInformation(userID.getUid());
+        //sendUserData
+        String resultServer  = HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_REGISTER,params);
 
-                            if (mAuth != null){
-                                mAuth.signOut();
-                            }
+        JSONObject c;
+        try {
+            c = new JSONObject(resultServer);
+            strStatusID = c.getString("StatusID");
+            strError = c.getString("Error");
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
 
-                            goToLogIn();
+        progressDialog.dismiss();
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("User", "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+        // Prepare Save Data
+        if (strStatusID.equals("0")) {
 
-                        }
-                    }
-                });
+            ad.setMessage(strError);
+            ad.show();
+
+        } else {
+            Toast.makeText(getActivity(), "Save Data Successfully", Toast.LENGTH_SHORT).show();
+            Edt_Username.setText("");
+            Edt_Password.setText("");
+            Edt_Fname.setText("");
+            Edt_Lname.setText("");
+            Edt_tel.setText("");
+
+            goToLogIn();
+        }
+
     }
 
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = Edt_Email.getText().toString();
-        if (TextUtils.isEmpty(email)) {
-            Edt_Email.setError("Required.");
+        String username = Edt_Username.getText().toString();
+        if (TextUtils.isEmpty(username)) {
+            Edt_Username.setError("Required.");
             valid = false;
         } else {
-            Edt_Email.setError(null);
+            Edt_Username.setError(null);
         }
 
         String password = Edt_Password.getText().toString();
@@ -177,21 +194,6 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.loginContainer,fragmentLogin);
         transaction.commit();
-    }
-
-    private void saveUserInformation(String userID) {
-
-        Email = Edt_Email.getText().toString();
-        Password = Edt_Password.getText().toString();
-        Fname = Edt_Fname.getText().toString();
-        Lname = Edt_Lname.getText().toString();
-
-        if (cb_admin.isChecked()){
-            isAdmin = true;
-        }
-
-        user = new User(Email,Password,Fname,Lname,isAdmin);
-        mUserRef.child(userID).setValue(user);
     }
 
 

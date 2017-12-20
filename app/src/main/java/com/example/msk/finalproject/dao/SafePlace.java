@@ -1,42 +1,42 @@
 package com.example.msk.finalproject.dao;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
 /**
- * Created by MsK on 6/12/2017 AD.
+ * Created by MsK on 16/12/2017 AD.
  */
 
-@IgnoreExtraProperties
 public class SafePlace {
-    private String place_name;
-    private Double place_lat;
-    private Double place_lng;
-    private Integer place_contain;
+    private Integer safeID;
+    private String safeName;
+    private Double lat;
+    private Double lng;
+    private Integer contain;
 
-    public SafePlace(){
-
+    public SafePlace(Integer safeID, String safeName, Double lat, Double lng, Integer contain) {
+        this.safeID = safeID;
+        this.safeName = safeName;
+        this.lat = lat;
+        this.lng = lng;
+        this.contain = contain;
     }
 
-    public SafePlace(String place_name, Double place_lat, Double place_lng, Integer place_contain) {
-        this.place_name = place_name;
-        this.place_lat = place_lat;
-        this.place_lng = place_lng;
-        this.place_contain = place_contain;
+    public Integer getSafeID() {
+        return safeID;
     }
 
-    public String getPlace_name() {
-        return place_name;
+    public String getSafeName() {
+        return safeName;
     }
 
-    public Double getPlace_lat() {
-        return place_lat;
+    public Double getLat() {
+        return lat;
     }
 
-    public Double getPlace_lng() {
-        return place_lng;
+    public Double getLng() {
+        return lng;
     }
 
-    public Integer getPlace_contain() {
-        return place_contain;
+    public Integer getContain() {
+        return contain;
     }
+
 }

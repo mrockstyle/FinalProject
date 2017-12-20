@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.example.msk.finalproject"
         minSdkVersion 15
@@ -33,6 +34,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':TheCheeseLibrary')
     implementation 'com.google.android.gms:play-services:11.6.2'
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
+
 }
 
 

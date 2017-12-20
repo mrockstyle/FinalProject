@@ -6,9 +6,45 @@ package com.example.msk.finalproject.controller;
  */
 
 public class Constant {
-    public static final String IS_LOGGED_IN = "isLoggedIn";
     public static Boolean IS_SEARCHED = false;
     public static Double Lat_FROM_SEARCH,Lng_FROM_SEARCH;
     public static Integer isOpen = 0;
+
+    private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
+    public static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
+            GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
+    public static final float GEOFENCE_RADIUS_IN_METERS = 1609; // 1 mile, 1.6 km
+
+
+    //URL
+    public static final String URL = "http://192.168.1.3/water/";
+    public static final String URL_LOGIN = "checklogin.php";
+    public static final String URL_REGISTER = "register.php";
+    public static final String URL_UPDATE_RESOURCE = "update_resource.php";
+    public static final String URL_LOCATION_INFO = "location4map.php";
+    public static final String URL_SAFEPLACE = "safeplace4map.php";
+    public static final String URL_WRITE_ELEVATION_DATA = "writeElevationData.php";
+    public static final String URL_GET_USERS_HOME = "getUsersHome.php";
+    public static final String URL_SEND_DISTANCE = "sendDistance.php";
+    public static final String URL_SEND_DISTANCE_USER = "sendDistanceUser.php";
+    public static final String URL_WATER_LEVEL_INFO = "waterlvinfo_data.php";
+    public static final String URL_DROP_LIST = "droplist.php";
+
+
+    //URL Google
+    public static final String GOOGLE_MAP_KEY = "AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk";
+    public static final String URL_GOOGLE_DISTANCE = "https://maps.googleapis.com/maps/api/distancematrix/json?";
+    public static final String URL_GOOGLE_ELEVATION = "https://maps.googleapis.com/maps/api/elevation/json?";
+    public static final String URL_GOOGLE_DIRECTION = "https://maps.googleapis.com/maps/api/directions/json?origin=13.740938,100.794866&destination=13.727626,100.772356&key=AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk";
+
+
+    //User Preference
+    public static final String USER_PREF = "userPref";
+    //pref key
+    public static final String USER_ID = "userID";
+    public static final String USER_FNAME = "firstname";
+    public static final String USER_LNAME = "lastname";
+    public static final String IS_ADMIN = "isAdmin";
+    public static final String IS_LOGGED_IN = "isLoggedIn";
 
 }

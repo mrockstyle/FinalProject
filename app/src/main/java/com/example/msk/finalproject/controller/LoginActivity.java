@@ -12,21 +12,19 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
+        preferences = getSharedPreferences(Constant.USER_PREF,0);
 
 
         if (savedInstanceState == null){
 
-            if (currentUser != null){
+            if (preferences.getBoolean(Constant.IS_LOGGED_IN,false)){
                 //if user signed in
                 //Change activity
                 finish();

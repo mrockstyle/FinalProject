@@ -35,6 +35,10 @@
             android:value="AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk" />
 
         <activity android:name=".controller.MainActivity" />
+
+        <service android:name=".util.NotificationService" android:exported="false"/>
+        <service android:name=".util.GeofenceTransitionsIntentService"/>
+
     </application>
 
 </manifest>
