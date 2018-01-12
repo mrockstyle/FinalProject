@@ -1,11 +1,17 @@
 package com.example.msk.finalproject.controller;
 
+import android.annotation.SuppressLint;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.location.LocationManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +24,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.msk.finalproject.R;
+import com.example.msk.finalproject.dao.SafePlace;
 import com.example.msk.finalproject.fragment.FragmentEditData;
 import com.example.msk.finalproject.fragment.FragmentMap;
 import com.example.msk.finalproject.fragment.FragmentReport;
 import com.example.msk.finalproject.fragment.FragmentWaterLevel;
-import com.example.msk.finalproject.util.NotificationService;
+import com.example.msk.finalproject.util.GetData;
+import com.example.msk.finalproject.util.Notification.NotificationService;
+import com.example.msk.finalproject.util.ProximityIntentReceiver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private AlertDialog.Builder ad;
 
     private CharSequence mTitle;
     private String[] Menu;
@@ -45,12 +58,23 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
 
+    //Location
+    private LocationManager locationManager;
+    private static final String PROX_ALERT_INTENT = "com.example.msk.finalproject.util.proximityintentreceiver";
+
+    //Object
+    private List<SafePlace> safePlaceList;
+    private GetData getData;
+
+    //Proximity
+    private ProximityIntentReceiver proximityIntentReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init(); //ทำ hamburger icon
+        init();
 
         if (savedInstanceState == null) {
             selectItem(0);
@@ -64,11 +88,47 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar); //set ให้ actionbar กลายเป็น toolbar
         createDrawerLayout();
 
-        startService(new Intent(this, NotificationService.class)); // เริ่ม service การแจ้งเตือนระดับน้ำ
+        //startService(new Intent(this, NotificationService.class)); // เริ่ม service การแจ้งเตือนระดับน้ำ
 
         tv_Fname = findViewById(R.id.tv_Fname);
         showUserProfile();
+        //////////////////////////////////////
+        safePlaceList = new ArrayList<>();
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        proximityIntentReceiver = new ProximityIntentReceiver();
 
+        getSafePlaceData(); //load safePlace from server
+
+        for (int i=0;i<safePlaceList.size();i++){          ///add proximity each safePlace
+            addProximity(safePlaceList.get(i).getSafeID()
+                    ,i
+                    ,safePlaceList.get(i).getLat()
+                    ,safePlaceList.get(i).getLng());
+        }
+
+
+        Log.i("Value","isBeforeRegis : "+preferences.getBoolean(Constant.IS_ENTERED,false));
+        registerProximity();
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private void addProximity(Integer safeID, int i, Double lat, Double lng) {
+        Intent intent = new Intent(PROX_ALERT_INTENT);
+        intent.putExtra("safeID", safeID);
+        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, i, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        locationManager.addProximityAlert(lat , lng, 150, -1, proximityIntent);
+    }
+
+    private void registerProximity() {
+        IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);
+        registerReceiver(new ProximityIntentReceiver(), filter);
+    }
+
+    private void getSafePlaceData() {
+        getData = new GetData();
+        getData.setSafePlaceData();
+        safePlaceList = getData.getSafePlaceList();
     }
 
     private void getUserPref() {
@@ -146,11 +206,11 @@ public class MainActivity extends AppCompatActivity {
         // update the main content by replacing fragments
         if (isAdmin){
             switch (position){
-                case 0 : getSupportFragmentManager()
+                /*case 0 : getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainContainer,FragmentWaterLevel.newInstance())
                         .commit();
-                    break;
+                    break;*/
                 case 1 : getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainContainer,FragmentMap.newInstance())
@@ -238,4 +298,11 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (proximityIntentReceiver != null){
+            unregisterReceiver(proximityIntentReceiver);
+        }
+    }
 }

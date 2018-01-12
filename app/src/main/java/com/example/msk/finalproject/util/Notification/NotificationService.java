@@ -1,4 +1,4 @@
-package com.example.msk.finalproject.util;
+package com.example.msk.finalproject.util.Notification;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,14 +10,15 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
 import com.example.msk.finalproject.R;
 import com.example.msk.finalproject.controller.Constant;
 import com.example.msk.finalproject.controller.MainActivity;
 import com.example.msk.finalproject.manager.HttpManager;
+import com.inthecheesefactory.thecheeselibrary.manager.Contextor;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
@@ -42,6 +43,9 @@ public class NotificationService extends Service {
     private NotificationCompat.Builder  notification , notification_two;
     private Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     private Timer mtimer;
+    private Boolean available = true,isCountDown = false;
+    private Boolean available2 = true,isCountDown2 = false;
+    private Context mContext;
 
     @Nullable
     @Override
@@ -51,9 +55,10 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
+        mContext = Contextor.getInstance().getContext();
 
         mtimer =new Timer();
-        mtimer.schedule(timerTask,1000*10,10*1000);
+        mtimer.schedule(timerTask,0,1000);
 
 
         super.onCreate();
@@ -62,7 +67,7 @@ public class NotificationService extends Service {
     TimerTask timerTask = new TimerTask() {
         @Override
         public void run() {
-            notification_data_water ();
+            notification_data_water();
         }
     };
 
@@ -77,7 +82,7 @@ public class NotificationService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private  void notification_data_water (){
+    private  void notification_data_water(){
 
         boolean  check_one=false;
         boolean  check_two=false;
@@ -98,8 +103,6 @@ public class NotificationService extends Service {
             if(length_two==0){
                 length_two=data.length();
             }
-
-
 
 
             if(length_one >length_two) {
@@ -162,6 +165,9 @@ public class NotificationService extends Service {
                 }
             }
 
+            //Log.i("Data","check_one : "+check_one);
+            //Log.i("Data","check_two : "+check_two);
+
         } catch (JSONException e) {
             // TODO Auto-generated catch block
 
@@ -170,8 +176,7 @@ public class NotificationService extends Service {
         }
 
 
-        if(check_one==true ){
-
+        if(check_one && available){
 
 
             notification =
@@ -208,10 +213,22 @@ public class NotificationService extends Service {
                     (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager_two.notify(1000, notification.build());
 
+            Intent intent = new Intent();
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setAction("action");
+            intent.putExtra("key","from notification");
+            sendBroadcast(intent);
 
+            available = false;
+
+            if (!available && !isCountDown){
+                CountDown();
+                isCountDown = true;
+            }
 
         }
-        if(check_two==true ){
+
+        if(check_two && available2){
 
 
 
@@ -250,31 +267,64 @@ public class NotificationService extends Service {
                     (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager_two.notify(1001, notification_two.build());
 
+            available2 = false;
+
+            if (!available2 && !isCountDown2){
+                CountDown2();
+                isCountDown2 = true;
+            }
+
         }
 
 
 
     }
 
+    private void CountDown() {
+
+        Timer timer1 = new Timer();
+        timer1.schedule(new TimerTask() {
+            int counter = 30;
+            @Override
+            public void run() {
+                counter--;
+                Log.i("Counter","Count = "+counter);
+                if (counter == 0){
+                    Log.i("Counter","Notification Available !!");
+                    available = true;
+                    isCountDown = false;
+                    timer1.cancel();
+                }
+            }
+        },0,1000);
+
+    }
+
+    private void CountDown2() {
+
+        Timer timer2 = new Timer();
+        timer2.schedule(new TimerTask() {
+            int counter = 30;
+            @Override
+            public void run() {
+                counter--;
+                Log.i("Counter","Count2 = "+counter);
+                if (counter == 0){
+                    Log.i("Counter","Notification2 Available !!");
+                    available2 = true;
+                    isCountDown2 = false;
+                    timer2.cancel();
+                }
+            }
+        },0,1000);
+
+    }
 
     @Override
     public void onDestroy() {
-        try{
-
-            mtimer.cancel();
-            timerTask.cancel();
-
-
-        }catch (Exception e){
-
-        }
-
-        Intent intent = new Intent("com.example.msk.finalproject");
-        intent.putExtra("yourvalue","torestore");
-        sendBroadcast(intent);
-
-
-
+        super.onDestroy();
+        //Log.i("Data","OnDestroy");
+        mtimer.cancel();
+        timerTask.cancel();
     }
-
 }

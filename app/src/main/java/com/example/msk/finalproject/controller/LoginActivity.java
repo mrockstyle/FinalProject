@@ -23,9 +23,15 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null){
+                //ไม่ต้องสนใจค่า false นะ ใส่ if แบบนี้คือ true ค่าใน pref ตอนเรียกจะใส่เป็นอะไรก็ได้ แต่มันจะเรียกตัวที่่เก็บไว้
+            if (preferences.getBoolean(Constant.IS_LOGGED_IN,false) && preferences.getBoolean(Constant.IS_ALERT, false)){
+                //ถ้า user login อยู่ แล้วเกิด alert (true,true)
+                finish();
+                Intent intent = new Intent(this, EvacuateMapActivity.class);
+                startActivity(intent);
 
-            if (preferences.getBoolean(Constant.IS_LOGGED_IN,false)){
-                //if user signed in
+            }else if (preferences.getBoolean(Constant.IS_LOGGED_IN,false)){
+                //ถ้า user login อยู่
                 //Change activity
                 finish();
                 Intent intent = new Intent(this, MainActivity.class);

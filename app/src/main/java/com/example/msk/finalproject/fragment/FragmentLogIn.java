@@ -215,6 +215,7 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
             editor.putBoolean(Constant.IS_ADMIN,false);
         }
         editor.putBoolean(Constant.IS_LOGGED_IN,true);
+        editor.putBoolean(Constant.IS_ENTERED,false);
         editor.apply();
     }
 

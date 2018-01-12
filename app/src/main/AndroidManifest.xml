@@ -2,9 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.msk.finalproject">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -18,7 +21,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".controller.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,13 +34,31 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk" />
+            android:value="AIzaSyAjK7thv7v8tTXNfVEFN8KLX1W3BTksqGM" />
 
         <activity android:name=".controller.MainActivity" />
 
-        <service android:name=".util.NotificationService" android:exported="false"/>
-        <service android:name=".util.GeofenceTransitionsIntentService"/>
+        <service
+            android:name=".util.Notification.NotificationService"
+            android:exported="false" />
 
+        <receiver android:name=".util.Notification.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".util.Notification.MyBroadcast">
+            <intent-filter>
+                <action android:name="action" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".util.ProximityIntentReceiver" ></receiver>
+
+        <activity android:name=".controller.EvacuateMapActivity"></activity>
     </application>
 
 </manifest>

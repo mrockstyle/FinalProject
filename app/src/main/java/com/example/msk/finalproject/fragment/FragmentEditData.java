@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +54,7 @@ public class FragmentEditData extends Fragment implements AdapterView.OnItemSele
     private Button btn_save;
     private String LocationKey;
     private ProgressDialog progressDialog;
+    private ArrayList<String> arrayname;
 
     //Pref
     private SharedPreferences preferences;
@@ -92,6 +94,7 @@ public class FragmentEditData extends Fragment implements AdapterView.OnItemSele
         preferences = getContext().getSharedPreferences(Constant.USER_PREF,0);
         //get userID
         userID = preferences.getInt(Constant.USER_ID,0);
+        arrayname = new ArrayList<>();
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -101,12 +104,9 @@ public class FragmentEditData extends Fragment implements AdapterView.OnItemSele
         //       in onSavedInstanceState
 
         spinner_location = rootView.findViewById(R.id.spinner_location);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        adapter = ArrayAdapter.createFromResource(getContext(), R.array.spinner_location, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner_location.setAdapter(adapter);
+
+        initDropdown();
+
         spinner_location.setOnItemSelectedListener(this);
 
         edt_height = rootView.findViewById(R.id.edt_height);
@@ -119,6 +119,35 @@ public class FragmentEditData extends Fragment implements AdapterView.OnItemSele
 
         progressDialog = new ProgressDialog(getContext());
 
+    }
+
+    private void initDropdown() {
+        List<NameValuePair> dropdownlist = new ArrayList<NameValuePair>();
+        try {
+            JSONArray data = new JSONArray(HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_DROP_LIST,dropdownlist));
+
+
+            for(int i = 0; i < data.length(); i++) {
+                JSONObject c = data.getJSONObject(i);
+                arrayname.add(c.getString("location_name"));
+
+            }
+
+            Toast.makeText(getActivity(), "Load dropdown success", Toast.LENGTH_SHORT).show();
+
+
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+
+            e.printStackTrace();
+            Toast.makeText(getActivity(), "ข้อมูลJson ผิดพลาด", Toast.LENGTH_SHORT).show();
+        }
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, arrayname);
+        spinner_location.setAdapter(adapter);
     }
 
     @Override

@@ -179,7 +179,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
     private void timerTick() {
         Log.d("data", "timerTick");
 
-        while (true) {
+        /*while (true) {
             try {
                 Thread.sleep(1000*60);
 
@@ -198,7 +198,14 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
                     realtime_data_two();
                 }
             });
-        }
+        }*/
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                realtime_data_two();
+            }
+        });
 
     }
 
@@ -249,7 +256,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
             for (int i = 0; i < data.length(); i++) {
                 c = data.getJSONObject(i);
 
-                if (((label.equalsIgnoreCase(c.getString("location_name"))) && found == false)&&(c.getInt("sensorID")==01)) {
+                if (((label.equalsIgnoreCase(c.getString("location_name"))) && !found)&&(c.getInt("sensorID")==01)) {
                     found = true;
                 }
 
@@ -263,7 +270,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
                 String aa = c.getString("location_name");
 
-                if (found == true) {
+                if (found) {
 
 
                     if ((label.equalsIgnoreCase(aa))&&(c.getInt("sensorID")==01)) {
@@ -393,7 +400,6 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
         try {
             data = new JSONArray(HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_WATER_LEVEL_INFO, params_table));
 
-
             for (int j = 0; j < data.length(); j++) {
                 c = data.getJSONObject(j);
 
@@ -455,7 +461,12 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i("Value","OnDestroy");
+        time.cancel();
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

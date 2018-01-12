@@ -17,7 +17,7 @@ public class Constant {
 
 
     //URL
-    public static final String URL = "http://192.168.1.3/water/";
+    public static final String URL = "http://192.168.1.2/water/";
     public static final String URL_LOGIN = "checklogin.php";
     public static final String URL_REGISTER = "register.php";
     public static final String URL_UPDATE_RESOURCE = "update_resource.php";
@@ -29,13 +29,16 @@ public class Constant {
     public static final String URL_SEND_DISTANCE_USER = "sendDistanceUser.php";
     public static final String URL_WATER_LEVEL_INFO = "waterlvinfo_data.php";
     public static final String URL_DROP_LIST = "droplist.php";
+    public static final String URL_GET_CONTAIN = "getContainInSafePlace.php";
+    public static final String URL_UPDATE_CONTAIN = "updateContain.php";
 
 
     //URL Google
-    public static final String GOOGLE_MAP_KEY = "AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk";
+    public static final String GOOGLE_MAP_KEY = "AIzaSyAjK7thv7v8tTXNfVEFN8KLX1W3BTksqGM";
     public static final String URL_GOOGLE_DISTANCE = "https://maps.googleapis.com/maps/api/distancematrix/json?";
+    public static final String DISTANCE_TEST = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=13.740938,100.794866&destinations=13.727626,100.772356&key=AIzaSyAjK7thv7v8tTXNfVEFN8KLX1W3BTksqGM";
     public static final String URL_GOOGLE_ELEVATION = "https://maps.googleapis.com/maps/api/elevation/json?";
-    public static final String URL_GOOGLE_DIRECTION = "https://maps.googleapis.com/maps/api/directions/json?origin=13.740938,100.794866&destination=13.727626,100.772356&key=AIzaSyC4yc4y-nzLzSuRkju91kPZrGs8JD5g8sk";
+    public static final String URL_GOOGLE_DIRECTION = "https://maps.googleapis.com/maps/api/directions/json?origin=13.740938,100.794866&destination=13.727626,100.772356&mode=walking&key=AIzaSyAjK7thv7v8tTXNfVEFN8KLX1W3BTksqGM";
 
 
     //User Preference
@@ -46,5 +49,7 @@ public class Constant {
     public static final String USER_LNAME = "lastname";
     public static final String IS_ADMIN = "isAdmin";
     public static final String IS_LOGGED_IN = "isLoggedIn";
+    public static final String IS_ALERT = "isAlert";
+    public static final String IS_ENTERED = "isEnter";
 
 }

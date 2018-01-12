@@ -25,7 +25,6 @@ public class DataParser {
             e.printStackTrace();
         }
         return getPaths(jsonArray);
-
     }
 
     private String[] getPaths(JSONArray StepjsonArray) {

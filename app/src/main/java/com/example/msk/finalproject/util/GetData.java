@@ -1,5 +1,7 @@
 package com.example.msk.finalproject.util;
 
+import android.util.Log;
+
 import com.example.msk.finalproject.controller.Constant;
 import com.example.msk.finalproject.dao.LocationInfo;
 import com.example.msk.finalproject.dao.SafePlace;
@@ -35,11 +37,11 @@ public class GetData {
     private LocationInfo locationInfo;
     private SafePlace safePlace;
 
+    private Integer counter=0;
+
 
     public GetData() {
-        locationInfosList = new ArrayList<>();
-        safePlaceList = new ArrayList<>();
-        distanceParams = new ArrayList<>();
+        //distanceParams = new ArrayList<>();
     }
 
     public void readDataAndFindDistance(Integer userID){
@@ -65,6 +67,8 @@ public class GetData {
             safePlaceData = new JSONArray(HttpManager
                     .getInstance()
                     .getHttpPost(Constant.URL+Constant.URL_SAFEPLACE,params3));
+
+            safePlaceList = new ArrayList<>(safePlaceData.length());
 
             for (int i=0; i<locationInfoData.length(); i++){
 
@@ -97,15 +101,17 @@ public class GetData {
                             ,safePlaceObj.getDouble("lat")
                             ,safePlaceObj.getDouble("lng")
                             ,safePlaceObj.getInt("contain"));
-                    safePlaceList.add(safePlace);
+                    if (counter == 0){
+                        safePlaceList.add(safePlace);
+                    }
                     LatLng safeLatLng = new LatLng(safePlace.getLat(),safePlace.getLng());
+
                     Double distance = SphericalUtil.computeDistanceBetween(locationLatLng,safeLatLng);
 
                     writeDataLocationSafe(distance);
 
-                    //Log.i("Value","safeID : "+safePlace.getSafeID());
-                    //Log.i("Value","("+locationInfo.getLocationID()+","+safePlace.getSafeID()+") = "+distance);
                 }
+                counter++;
 
             }
 
@@ -113,6 +119,87 @@ public class GetData {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setLocationData(){
+        params2 = new ArrayList<>();
+        locationInfosList = new ArrayList<>();
+
+        try {
+
+            locationInfoData = new JSONArray(HttpManager
+                    .getInstance()
+                    .getHttpPost(Constant.URL+Constant.URL_LOCATION_INFO,params2));
+
+            for (int i=0; i<locationInfoData.length(); i++){
+
+                locationInfoObj = locationInfoData.getJSONObject(i);
+
+                //Log.i("Value","locationInfoObj : "+locationInfoObj);
+                locationInfo = new LocationInfo(locationInfoObj.getInt("locationID")
+                        ,locationInfoObj.getString("location_name")
+                        ,locationInfoObj.getDouble("lat")
+                        ,locationInfoObj.getDouble("lng"));
+
+                LatLng locationLatLng = new LatLng(locationInfo.getLat(), locationInfo.getLng());
+
+                locationInfosList.add(locationInfo);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSafePlaceData(){
+        params3 = new ArrayList<>();
+        safePlaceList = new ArrayList<>();
+
+        try {
+            safePlaceData = new JSONArray(HttpManager
+                    .getInstance()
+                    .getHttpPost(Constant.URL+Constant.URL_SAFEPLACE,params3));
+
+
+            for (int j=0; j<safePlaceData.length(); j++) {
+                safePlaceObj = safePlaceData.getJSONObject(j);
+                safePlace = new SafePlace(safePlaceObj.getInt("safeID")
+                        , safePlaceObj.getString("name")
+                        , safePlaceObj.getDouble("lat")
+                        , safePlaceObj.getDouble("lng")
+                        , safePlaceObj.getInt("contain"));
+
+                safePlaceList.add(safePlace);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setUserHomeData(Integer userID){
+
+        params = new ArrayList<>();
+        params.add(new BasicNameValuePair("userID",String.valueOf(userID)));
+
+        try {
+
+            homeObj = new JSONObject(HttpManager
+                    .getInstance()
+                    .getHttpPost(Constant.URL+Constant.URL_GET_USERS_HOME,params));
+
+
+            userHome = new UserHome(
+                    homeObj.getString("addressName")
+                    ,homeObj.getDouble("lat")
+                    ,homeObj.getDouble("lng"));
+
+            LatLng userLatLng = new LatLng(userHome.getLat(),userHome.getLng());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void writeDataUserLocation(Integer userID,Double distance) {

@@ -11,6 +11,9 @@ public class SafePlace {
     private Double lng;
     private Integer contain;
 
+    public SafePlace() {
+    }
+
     public SafePlace(Integer safeID, String safeName, Double lat, Double lng, Integer contain) {
         this.safeID = safeID;
         this.safeName = safeName;
