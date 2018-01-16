@@ -32,9 +32,13 @@ import com.example.msk.finalproject.fragment.FragmentWaterLevel;
 import com.example.msk.finalproject.util.GetData;
 import com.example.msk.finalproject.util.Notification.NotificationService;
 import com.example.msk.finalproject.util.ProximityIntentReceiver;
+import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
+import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.itangqi.waveloadingview.WaveLoadingView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private AlertDialog.Builder ad;
+    //private FlowingDrawer flowingDrawer;
 
     private CharSequence mTitle;
     private String[] Menu;
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         getUserPref(); //อ่านข้อมูล user ที่ login ไว้
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); //set ให้ actionbar กลายเป็น toolbar
+        //flowingDrawer = findViewById(R.id.drawerlayout);
         createDrawerLayout();
 
         //startService(new Intent(this, NotificationService.class)); // เริ่ม service การแจ้งเตือนระดับน้ำ
@@ -96,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         safePlaceList = new ArrayList<>();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         proximityIntentReceiver = new ProximityIntentReceiver();
+
 
         getSafePlaceData(); //load safePlace from server
 
@@ -111,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         registerProximity();
 
     }
+
 
     @SuppressLint("MissingPermission")
     private void addProximity(Integer safeID, int i, Double lat, Double lng) {
@@ -206,11 +214,11 @@ public class MainActivity extends AppCompatActivity {
         // update the main content by replacing fragments
         if (isAdmin){
             switch (position){
-                /*case 0 : getSupportFragmentManager()
+                case 0 : getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainContainer,FragmentWaterLevel.newInstance())
                         .commit();
-                    break;*/
+                    break;
                 case 1 : getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.mainContainer,FragmentMap.newInstance())

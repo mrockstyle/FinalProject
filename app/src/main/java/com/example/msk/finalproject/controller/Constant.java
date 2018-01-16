@@ -17,7 +17,7 @@ public class Constant {
 
 
     //URL
-    public static final String URL = "http://192.168.1.2/water/";
+    public static final String URL = "http://192.168.111.39/water/";
     public static final String URL_LOGIN = "checklogin.php";
     public static final String URL_REGISTER = "register.php";
     public static final String URL_UPDATE_RESOURCE = "update_resource.php";
@@ -31,6 +31,7 @@ public class Constant {
     public static final String URL_DROP_LIST = "droplist.php";
     public static final String URL_GET_CONTAIN = "getContainInSafePlace.php";
     public static final String URL_UPDATE_CONTAIN = "updateContain.php";
+    public static final String URL_GET_HEIGHT = "getHeight.php";
 
 
     //URL Google

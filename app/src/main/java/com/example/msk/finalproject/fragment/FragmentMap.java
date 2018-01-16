@@ -189,14 +189,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         //addMarker
         addMarker();
 
+
         String[] directionList;
-
-
         params = new ArrayList<>();
         String directionString = HttpManager.getInstance().getHttpPost(Constant.URL_GOOGLE_DIRECTION,params);
-
-        Log.i("Value",directionString);
-
 
         DataParser dataParser = new DataParser();
         directionList = dataParser.parseDirections(directionString);

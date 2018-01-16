@@ -21,6 +21,9 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+    repositories {
+        jcenter()
+    }
 }
 
 dependencies {
@@ -35,6 +38,12 @@ dependencies {
     implementation project(':TheCheeseLibrary')
     implementation 'com.google.android.gms:play-services:11.6.2'
     compile 'com.google.maps.android:android-maps-utils:0.5+'
+
+    compile 'me.itangqi.waveloadingview:library:0.3.5' //water circle
+    //flowing drawer
+    compile 'com.mxn.soul:flowingdrawer-core:2.0.0'
+    compile 'com.nineoldandroids:library:2.4.0'
+
 
 }
 

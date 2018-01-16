@@ -20,6 +20,7 @@ import com.example.msk.finalproject.controller.Constant;
 import com.example.msk.finalproject.manager.HttpManager;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,23 +36,28 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import me.itangqi.waveloadingview.WaveLoadingView;
+
 public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private ArrayList<String> worldlist;
     private ArrayList<String> arrayname;
 
     //JSON
-    private JSONArray data;
+    private JSONArray data,hArray;
     private JSONObject c;
 
     //Variables
     private String label;
     private Integer led;
     private Integer pos_time =0;
+    private Integer height;
 
     //View Variables
     private Spinner span;
-    private TextView tvdataNow,tvNormal,tvAlert,tvCritical,tvDate,tvMonitor;
+    //private TextView tvdataNow,tvNormal,tvAlert,tvCritical,tvDate,tvMonitor;
+    //private TextView tvdataNow;
+    private WaveLoadingView waveLoadingView;
 
 
     //Timer
@@ -90,7 +96,9 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
         // Init Fragment level's variable(s) here
         worldlist = new ArrayList<>();
         arrayname = new ArrayList<>();
+
     }
+
 
     @SuppressWarnings("UnusedParameters")
     private void initInstances(View rootView, Bundle savedInstanceState) {
@@ -103,15 +111,9 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
         StrictMode.setThreadPolicy(policy);
         initDropdown();
         span.setOnItemSelectedListener(this);
+        waveLoadingView = rootView.findViewById(R.id.waveLoadingView);
 
-        tvdataNow = rootView.findViewById(R.id.text_datanow);
-        tvNormal = rootView.findViewById(R.id.text_datanomal);
-        tvAlert = rootView.findViewById(R.id.text_datacrione);
-        tvCritical = rootView.findViewById(R.id.text_datacritwo);
-        tvDate = rootView.findViewById(R.id.textdata_table);
-        tvMonitor = rootView.findViewById(R.id.text_datalow);
-
-        //data_table();
+        //tvdataNow = rootView.findViewById(R.id.tv_dataNow);
 
     }
 
@@ -151,6 +153,8 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
         Object item = adapterView.getItemAtPosition(position);
 
         label = item.toString();
+
+        height = getHeight(position+1);
 
         realtime_data();
 
@@ -209,6 +213,23 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
     }
 
+    private Integer getHeight(Integer position) {
+        Integer height=null;
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("locationID",String.valueOf(position)));
+
+        try {
+            JSONObject obj = new JSONObject(HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_GET_HEIGHT, params));
+            height = obj.getInt("height");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return height;
+
+    }
+
 
     private void realtime_data() {
 
@@ -229,6 +250,8 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
         try {
 
             data = new JSONArray(HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_WATER_LEVEL_INFO, params_table));
+
+            Log.i("Value",""+data);
 
             final ArrayList<HashMap<String, String>> MyArrList = new ArrayList<HashMap<String, String>>();
             HashMap<String, String> map;
@@ -278,18 +301,18 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
                         if((c.getInt("normal_point"))!=0){
                             data_nomal[1] = c.getString("normal_point");
-                            tvNormal.setText(c.getString("normal_point"));
+                            //tvNormal.setText(c.getString("normal_point"));
                         }else{
-                            tvNormal.setText("XX");
+                            //tvNormal.setText("XX");
                             data_nomal[1]="0";
                         }
 
 
                         if((c.getInt("monitor_point"))!=0){
                             data_nomal[2] = c.getString("monitor_point");
-                            tvMonitor.setText(c.getString("monitor_point"));
+                            //tvMonitor.setText(c.getString("monitor_point"));
                         }else{
-                            tvMonitor.setText("XX");
+                            //tvMonitor.setText("XX");
                             data_nomal[2]="0";
                         }
 
@@ -297,22 +320,22 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
                         if((c.getInt("alert_point"))!=0){
                             data_nomal[3] = c.getString("alert_point");
-                            tvAlert.setText(c.getString("alert_point"));
+                            //tvAlert.setText(c.getString("alert_point"));
                         }else{
-                            tvAlert.setText("XX");
+                            //tvAlert.setText("XX");
                             data_nomal[3]="0";
                         }
 
                         if((c.getInt("critical_point"))!=0){
                             data_nomal[4] = c.getString("critical_point");
-                            tvCritical.setText(c.getString("critical_point"));
+                            //tvCritical.setText(c.getString("critical_point"));
                         }else{
-                            tvCritical.setText("XX");
+                            //tvCritical.setText("XX");
                             data_nomal[4]="0";
                         }
 
 
-                        tvdataNow.setText(c.getString("data"));
+                        //tvdataNow.setText(c.getString("data"));
 
 
 
@@ -338,22 +361,32 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
                         led=led+1;
 
 
-                        tvDate.setText(date_time);
+                        //tvDate.setText(date_time);
 
 
                         if (Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("critical_point"))) {
-                            tvCritical.setTextColor(getResources().getColor(R.color.color_red));
+                            //tvCritical.setTextColor(getResources().getColor(R.color.color_red));
+                            waveLoadingView.setCenterTitleColor(Color.RED);
+                            waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
 
 
                         } else if (Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("alert_point"))) {
-                            tvAlert.setTextColor(getResources().getColor(R.color.color_orange));
+                            //tvAlert.setTextColor(getResources().getColor(R.color.color_orange));
+                            waveLoadingView.setCenterTitleColor(Color.RED);
+                            waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
                         } else if (Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("monitor_point"))) {
 
-                            tvMonitor.setTextColor(getResources().getColor(R.color.color_green));
+                            //tvMonitor.setTextColor(getResources().getColor(R.color.color_green));
+                            waveLoadingView.setCenterTitleColor(Color.GREEN);
+                            waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
                         }else  if(Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("normal_point"))){
-                            tvNormal.setTextColor(getResources().getColor(R.color.color_green));
+                            //tvNormal.setTextColor(getResources().getColor(R.color.color_green));
+                            waveLoadingView.setCenterTitleColor(Color.WHITE);
+                            waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
                         }else {
-                            tvdataNow.setTextColor(Color.BLACK);
+                            //tvdataNow.setTextColor(Color.BLACK);
+                            waveLoadingView.setCenterTitleColor(Color.WHITE);
+                            waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
                         }
 
                     }
@@ -361,13 +394,13 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
                 }else {
 
-                    tvdataNow.setText("XX");
-                    tvNormal.setText("XX");
+                    //tvdataNow.setText("XX");
+                    /*tvNormal.setText("XX");
                     tvMonitor.setText("XX");
                     tvAlert.setText("XX");
                     tvCritical.setText("XX");
-                    tvDate.setText("XX-XX-XX | XX:XX:XX");
-                    tvdataNow.setTextColor(Color.BLACK);
+                    tvDate.setText("XX-XX-XX | XX:XX:XX");*/
+                    //tvdataNow.setTextColor(Color.BLACK);
 
                 }
 
@@ -409,8 +442,8 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
                 if ((label.equalsIgnoreCase(aa))&&(c.getInt("sensorID")==01)) {
 
-                    tvdataNow.setText(c.getString("data"));
-
+                    //tvdataNow.setText(c.getString("data"));
+                    waveLoadingView.setCenterTitle(c.getString("data"));
 
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String time = c.getString("datetime");
@@ -423,22 +456,37 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
                     String date_time =String.valueOf(v.get(Calendar.DATE)) + "-" + month + "-" + year +" | "+String.valueOf(v.get(Calendar.HOUR_OF_DAY)) + ":" + String.valueOf(v.get(Calendar.MINUTE)) + ":" + String.valueOf(v.get(Calendar.SECOND));
 
 
-                    tvDate.setText(date_time);
+                    //tvDate.setText(date_time);
 
                     if (Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("critical_point"))) {
-                        tvdataNow.setTextColor(getResources().getColor(R.color.color_red));
+                        waveLoadingView.setCenterTitleColor(Color.RED);
+                        waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
+                        //Log.i("Color","critical");
 
                     } else if (Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("alert_point"))) {
-                        tvdataNow.setTextColor(getResources().getColor(R.color.color_orange));
+                        waveLoadingView.setCenterTitleColor(Color.RED);
+                        waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
+                        //Log.i("Color","alert");
+
+
+                    } else if (Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("monitor_point"))) {
+
+                        waveLoadingView.setCenterTitleColor(Color.GREEN);
+                        waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
+                        //Log.i("Color","normal");
 
                     } else if (Integer.parseInt(c.getString("data")) >= Integer.parseInt(c.getString("normal_point"))) {
 
-                        tvdataNow.setTextColor(getResources().getColor(R.color.color_green));
+                        waveLoadingView.setCenterTitleColor(Color.WHITE);
+                        waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
+                        //Log.i("Color","normal");
                     } else {
-                        tvdataNow.setTextColor(Color.BLACK);
+                        waveLoadingView.setCenterTitleColor(Color.WHITE);
+                        waveLoadingView.setCenterTitleStrokeColor(Color.BLACK);
                     }
 
-
+                    waveLoadingView.setProgressValue(Integer.parseInt(c.getString("data"))*100/height);
+                    waveLoadingView.setCenterTitle(c.getString("data"));
                 }
 
 
