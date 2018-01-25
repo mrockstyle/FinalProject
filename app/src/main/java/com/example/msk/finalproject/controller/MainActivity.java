@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,16 +25,27 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.msk.finalproject.R;
+import com.example.msk.finalproject.dao.LocationInfo;
 import com.example.msk.finalproject.dao.SafePlace;
+import com.example.msk.finalproject.dao.UserHome;
 import com.example.msk.finalproject.fragment.FragmentEditData;
 import com.example.msk.finalproject.fragment.FragmentMap;
 import com.example.msk.finalproject.fragment.FragmentReport;
 import com.example.msk.finalproject.fragment.FragmentWaterLevel;
+import com.example.msk.finalproject.manager.HttpManager;
+import com.example.msk.finalproject.util.DataParser;
 import com.example.msk.finalproject.util.GetData;
 import com.example.msk.finalproject.util.Notification.NotificationService;
 import com.example.msk.finalproject.util.ProximityIntentReceiver;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.android.SphericalUtil;
 import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Object
     private List<SafePlace> safePlaceList;
+    private UserHome userHome;
     private GetData getData;
+    private List<NameValuePair> params;
 
     //Proximity
     private ProximityIntentReceiver proximityIntentReceiver;
@@ -80,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
+        initProximity(); // สร้างขอบเขตนับคน
+        initDistance();
+        initSafePlaceDistance();
 
         if (savedInstanceState == null) {
             selectItem(0);
@@ -94,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         //flowingDrawer = findViewById(R.id.drawerlayout);
         createDrawerLayout();
 
-        //startService(new Intent(this, NotificationService.class)); // เริ่ม service การแจ้งเตือนระดับน้ำ
+        startService(new Intent(this, NotificationService.class)); // เริ่ม service การแจ้งเตือนระดับน้ำ
 
         tv_Fname = findViewById(R.id.tv_Fname);
         showUserProfile();
@@ -103,7 +120,9 @@ public class MainActivity extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         proximityIntentReceiver = new ProximityIntentReceiver();
 
+    }
 
+    private void initProximity() {
         getSafePlaceData(); //load safePlace from server
 
         for (int i=0;i<safePlaceList.size();i++){          ///add proximity each safePlace
@@ -112,11 +131,75 @@ public class MainActivity extends AppCompatActivity {
                     ,safePlaceList.get(i).getLat()
                     ,safePlaceList.get(i).getLng());
         }
-
-
-        Log.i("Value","isBeforeRegis : "+preferences.getBoolean(Constant.IS_ENTERED,false));
         registerProximity();
+    }
 
+    private void initDistance() {
+        getUserHomeData(); // load user data form server
+
+        //cal distance
+        for (int i=0 ; i < safePlaceList.size(); i++){
+            String directionList;
+            Double distance;
+            params = new ArrayList<>();
+            String directionString = HttpManager
+                    .getInstance().getHttpPost(Constant.URL_GOOGLE_DIRECTION+"origin="+userHome.getLat()+","+userHome.getLng()
+                            +"&destination="+safePlaceList.get(i).getLat()+","+safePlaceList.get(i).getLng()+"&mode=walking&key="+Constant.GOOGLE_MAP_KEY,params);
+
+            DataParser dataParser = new DataParser();
+            directionList = dataParser.parseDirections(directionString);
+            distance = dataParser.getDistance(directionString);
+            updatePath(directionList,safePlaceList.get(i).getSafeID(),distance,userID);
+        }
+    }
+
+    private void initSafePlaceDistance() {
+        for (int i = 0; i < safePlaceList.size(); i++){
+            for (int j = 0; j < safePlaceList.size(); j++){
+                if (i != j){
+                    String polylines;
+                    Double distance;
+                    params = new ArrayList<>();
+                    String directionString = HttpManager
+                            .getInstance().getHttpPost(Constant.URL_GOOGLE_DIRECTION+"origin="+safePlaceList.get(i).getLat()+","+safePlaceList.get(i).getLng()
+                                    +"&destination="+safePlaceList.get(j).getLat()+","+safePlaceList.get(j).getLng()+"&mode=walking&key="+Constant.GOOGLE_MAP_KEY,params);
+
+                    DataParser dataParser = new DataParser();
+                    polylines = dataParser.parseDirections(directionString);
+                    distance = dataParser.getDistance(directionString);
+                    updateSafePath(safePlaceList.get(i).getSafeID(),safePlaceList.get(j).getSafeID(),distance,polylines);
+                    //Log.i("Path","("+safePlaceList.get(i).getSafeID()+","+safePlaceList.get(j).getSafeID()+") = "+distance);
+                }
+            }
+        }
+    }
+
+    private void updateSafePath(Integer safeIDs, Integer safeIDd, Double distance, String polylines) {
+        params = new ArrayList<>();
+        params.add(new BasicNameValuePair("safeIDstart",String.valueOf(safeIDs)));
+        params.add(new BasicNameValuePair("safeIDdestination",String.valueOf(safeIDd)));
+        params.add(new BasicNameValuePair("distance",String.valueOf(distance)));
+        params.add(new BasicNameValuePair("polyline",String.valueOf(polylines)));
+
+        HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_WRITE_SAFEPATH,params); //update safe path
+    }
+
+    private void updatePath(String directionList,Integer safeID,Double distance,Integer userID) {
+
+        params = new ArrayList<>();
+        params.add(new BasicNameValuePair("safeID",String.valueOf(safeID)));
+        params.add(new BasicNameValuePair("user_distance",String.valueOf(distance)));
+        params.add(new BasicNameValuePair("user_polyline",directionList));
+        params.add(new BasicNameValuePair("userIDpath",String.valueOf(userID)));
+
+        HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_UPDATE_USERPATH,params); //update path
+
+    }
+
+    private void getUserHomeData() {
+        getData = new GetData();
+        getData.setUserHomeData(userID);
+        userHome = getData.getUserHome();
     }
 
 

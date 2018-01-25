@@ -44,11 +44,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.PolyUtil;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +71,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
     //Obj Model
     private List<LocationInfo> locationInfoList;
     private List<SafePlace> safePlaceList,safePlaceListRefresh;
+    private List<String> polylinesListTmp,polylinesList;
+    private List<Integer> contain;
     private UserHome userHome;
     private GetData getData;
 
@@ -80,6 +87,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
     private LocationRequest locationRequest;
     String TAG = "Location";
     private Marker safePlaceMarker;
+    private Polyline polyline;
 
     // Defined in mili seconds.
     // This number in extremely low, and should be used only for debug
@@ -155,10 +163,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         CreateMap(rootView,savedInstanceState);
         readData();
 
-        if (preferences.getBoolean(Constant.IS_ALERT,true)){
-            initForEvacuation();
-        }
-
     }
 
     private void SetCurrentLocation() {
@@ -189,16 +193,12 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         //addMarker
         addMarker();
 
-
-        String[] directionList;
-        params = new ArrayList<>();
-        String directionString = HttpManager.getInstance().getHttpPost(Constant.URL_GOOGLE_DIRECTION,params);
-
-        DataParser dataParser = new DataParser();
-        directionList = dataParser.parseDirections(directionString);
-        displayDirection(directionList);
+        if (preferences.getBoolean(Constant.IS_ALERT,true)){
+            initForEvacuation();
+        }
 
     }
+
 
     private void readData(){
         locationInfoList = getData.getLocationInfosList();
@@ -251,17 +251,6 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
 
 
         return false;
-    }
-
-    private void displayDirection(String[] directionList) {
-        for (int i=0; i<directionList.length; i++){
-            PolylineOptions options = new PolylineOptions();
-            options.color(Color.BLUE);
-            options.width(10);
-            options.addAll(PolyUtil.decode(directionList[i]));
-
-            mMap.addPolyline(options);
-        }
     }
 
 
@@ -398,8 +387,90 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
 
 
     private void initForEvacuation() {
-        //TODO:: geofence,path,ant
 
+        //load polyline data
+        polylinesListTmp = new ArrayList<>();
+        polylinesList = new ArrayList<>();
+        params = new ArrayList<>();
+        params.add(new BasicNameValuePair("userIDpath",String.valueOf(userID)));
+
+        JSONArray jsonArray=null;
+        JSONObject jsonObject=null;
+        try {
+            jsonArray = new JSONArray(HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_GET_POLYLINE_BY_ID,params));
+            for (int i=0; i<jsonArray.length();i++){
+                jsonObject = jsonArray.getJSONObject(i);
+                polylinesListTmp.add(jsonObject.getString("user_polyline"));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        params = new ArrayList<>();
+        JSONObject pathObj = null;
+        try {
+            pathObj = new JSONObject(HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_ACS_RUNNER,params));
+            String path = pathObj.getString("path");
+
+            refreshContainData(path); //เลือกเส้นทาง
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void refreshContainData(String path) {
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                timerTick(path);
+            }
+        },0,3000);
+
+    }
+
+    private void timerTick(String path) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                refresh(path);
+            }
+        });
+    }
+
+    private void refresh(String path) {
+        getData.setContainData(userID);
+        contain = getData.getContain();
+        Log.i("Value","Contain = "+contain);
+        String polylineStr = null;
+        Integer value = null; //ไว้เก็บ node ที่เลือก
+
+        for (int i = 1; i < path.length()-1; i++){
+            if (contain.get(i-1) > 28){ //แต่ละที่ห้ามเกิน 30 คน แต่เผื่อไว้ 28 ให้เปลี่ยนเส้นทาง
+                continue;
+            }else {
+                value = Integer.parseInt(String.valueOf(path.charAt(i)));
+                polylineStr = polylinesListTmp.get(value-1);
+                break;
+            }
+        }
+
+        Log.i("Value","Polyline = "+polylineStr);
+
+        if (polylineStr != null){
+            if (polyline != null){
+                polyline.remove();
+            }
+
+            polyline = mMap.addPolyline(new PolylineOptions()
+                    .color(Color.BLUE)
+                    .width(10)
+                    .addAll(PolyUtil.decode(polylineStr)));
+        }
     }
 
 

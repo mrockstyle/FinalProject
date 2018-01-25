@@ -10,6 +10,10 @@ public class SafePlace {
     private Double lat;
     private Double lng;
     private Integer contain;
+    private Integer userIDpath;
+    private Double elevation;
+    private Double userDistance;
+    private String userPolyline;
 
     public SafePlace() {
     }
@@ -20,6 +24,13 @@ public class SafePlace {
         this.lat = lat;
         this.lng = lng;
         this.contain = contain;
+    }
+
+    public SafePlace(Integer safeID, Integer userIDpath, Double userDistance, String userPolyline) {
+        this.safeID = safeID;
+        this.userIDpath = userIDpath;
+        this.userDistance = userDistance;
+        this.userPolyline = userPolyline;
     }
 
     public Integer getSafeID() {

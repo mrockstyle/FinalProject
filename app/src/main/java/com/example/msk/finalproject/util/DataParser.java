@@ -10,28 +10,25 @@ import org.json.JSONObject;
  */
 
 public class DataParser {
-    public String[] parseDirections(String jsonData){
+    public String parseDirections(String jsonData){
         JSONArray jsonArray = null;
         JSONObject jsonObject;
 
         try {
             jsonObject = new JSONObject(jsonData);
-            jsonArray = jsonObject.getJSONArray("routes")
-                    .getJSONObject(0)
-                    .getJSONArray("legs")
-                    .getJSONObject(0)
-                    .getJSONArray("steps");
+            jsonArray = jsonObject.getJSONArray("routes");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return getPaths(jsonArray);
     }
 
-    private String[] getPaths(JSONArray StepjsonArray) {
-        String[] polylines = new String[StepjsonArray.length()];
+    private String getPaths(JSONArray StepjsonArray) {
+        String polylines = null;
         for (int i = 0; i < StepjsonArray.length(); i++){
             try {
-                polylines[i] = getPath(StepjsonArray.getJSONObject(i));
+                JSONObject object = StepjsonArray.getJSONObject(i);
+                polylines = object.getJSONObject("overview_polyline").getString("points");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -39,14 +36,26 @@ public class DataParser {
         return polylines;
     }
 
-    private String getPath(JSONObject pathJSON) {
+    public Double getDistance(String jsonData){
+        JSONArray jsonArray = null;
+        JSONObject jsonObject;
+        double distance = 0;
 
-        String polyline = null;
         try {
-            polyline = pathJSON.getJSONObject("polyline").getString("points");
+            jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("routes")
+                    .getJSONObject(0)
+                    .getJSONArray("legs");
+
+            for (int i = 0 ; i < jsonArray.length() ; i++){
+                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                distance = jsonObject1.getJSONObject("distance").getDouble("value");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return polyline;
+
+        return distance;
+
     }
 }
