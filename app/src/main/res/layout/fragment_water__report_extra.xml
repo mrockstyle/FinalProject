@@ -1,0 +1,55 @@
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/tabhost"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentTop="true"
+    android:textColor="#ffffff"
+    android:background="#eeeeee">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:background="#1f3caa">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="max min Report "
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:textAllCaps="true"
+            android:textColor="#ff7e00"
+            android:id="@+id/textView17"
+            android:background="#1f3caa"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:layout_margin="5dp">
+        </TabWidget>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/fragment_water__reportex_day"/>
+            <include layout="@layout/fragment_water__reportex_month"/>
+            <include layout="@layout/fragment_water__reportex_year"/>
+
+
+        </FrameLayout>
+
+    </LinearLayout>
+</TabHost>

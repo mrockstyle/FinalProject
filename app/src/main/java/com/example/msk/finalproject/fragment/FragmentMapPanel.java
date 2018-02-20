@@ -1,5 +1,7 @@
 package com.example.msk.finalproject.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ public class FragmentMapPanel extends Fragment implements View.OnClickListener {
 
     private Button btnExit;
     private SharedPreferences preferences;
+    private AlertDialog.Builder ad;
 
     public FragmentMapPanel() {
         super();
@@ -68,12 +71,26 @@ public class FragmentMapPanel extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view.getId() == R.id.btn_exit){
 
-            updatePref();
+            showDialogBox();
 
-            getActivity().finish();
-            Intent intent = new Intent(getContext(), MainActivity.class);
-            startActivity(intent);
         }
+    }
+
+    private void showDialogBox() {
+        ad = new AlertDialog.Builder(getContext());
+        ad.setTitle("Attention");
+        ad.setMessage("Are you sure to exit ?");
+        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                updatePref();
+                getActivity().finish();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        ad.setNegativeButton("No",null);
+        ad.show();
     }
 
     private void updatePref() {

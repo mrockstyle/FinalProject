@@ -16,4 +16,8 @@
     <color name="orange_alert">#F19319</color>
     <color name="yellow_alert">#FEEF27</color>
     <color name="green_alert">#63FC3C</color>
+
+
+    <color name="blue_path">#42A5F5</color>
+    <color name="gray_path">#BDBDBD</color>
 </resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:background="@drawable/black_bar"
+                android:id="@+id/edt_address"
+                android:textColor="#ffffff"
+                android:textColorHint="#ffffff"
+                android:paddingLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:hint="Address"
+                android:inputType="text"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+            <Button
+                android:background="@drawable/search_icon"
+                android:id="@+id/btn_find"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_weight="5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_saveAddress"
+            android:text="Save"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
+</LinearLayout>

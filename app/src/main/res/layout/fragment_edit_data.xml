@@ -1,64 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#335975"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <TextView
-        android:text="Location"
-        android:textSize="20dp"
+    <ScrollView
+        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-    <Spinner
-        android:id="@+id/spinner_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </Spinner>
+        <LinearLayout
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edt_height"
-        android:hint="height"
-        android:layout_marginTop="30dp"
-        android:inputType="number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <FrameLayout
+                android:layout_marginTop="10dp"
+                android:background="#ffffff"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal|top">
+
+                <FrameLayout
+                    android:background="#25aae1"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp">
+
+                    <ImageView
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="left|center"
+                        android:src="@drawable/path"
+                        android:layout_width="23dp"
+                        android:layout_height="23dp" />
 
 
-    <EditText
-        android:id="@+id/edt_normal"
-        android:hint="normal point"
-        android:layout_marginTop="30dp"
-        android:inputType="number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <EditText
-        android:id="@+id/edt_monitor"
-        android:hint="monitor point"
-        android:layout_marginTop="30dp"
-        android:inputType="number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <EditText
-        android:id="@+id/edt_alert"
-        android:hint="alert point"
-        android:layout_marginTop="30dp"
-        android:inputType="number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <EditText
-        android:id="@+id/edt_critical"
-        android:hint="critical point"
-        android:layout_marginTop="30dp"
-        android:inputType="number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_marginLeft="40dp"
+                        android:layout_gravity="center|left"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp"
+                        android:text="Location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
 
-    <Button
-        android:text="save"
-        android:layout_marginTop="20dp"
-        android:id="@+id/btn_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:id="@+id/spinner_location"
+                    android:layout_gravity="bottom" />
+
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/edt_height"
+                    android:hint="height"
+                    android:background="@drawable/black_bar"
+                    android:paddingLeft="20dp"
+                    android:textColorHint="#ffffff"
+                    android:textColor="#ffffff"
+                    android:layout_marginTop="20dp"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
+
+                <EditText
+                    android:background="@drawable/black_bar"
+                    android:paddingLeft="20dp"
+                    android:textColorHint="#ffffff"
+                    android:textColor="#ffffff"
+                    android:id="@+id/edt_normal"
+                    android:hint="normal point"
+                    android:layout_marginTop="20dp"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
+                <EditText
+                    android:background="@drawable/black_bar"
+                    android:paddingLeft="20dp"
+                    android:textColorHint="#ffffff"
+                    android:textColor="#ffffff"
+                    android:id="@+id/edt_monitor"
+                    android:hint="monitor point"
+                    android:layout_marginTop="20dp"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
+                <EditText
+                    android:background="@drawable/black_bar"
+                    android:paddingLeft="20dp"
+                    android:textColorHint="#ffffff"
+                    android:textColor="#ffffff"
+                    android:id="@+id/edt_alert"
+                    android:hint="alert point"
+                    android:layout_marginTop="20dp"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
+                <EditText
+                    android:background="@drawable/black_bar"
+                    android:paddingLeft="20dp"
+                    android:textColorHint="#ffffff"
+                    android:textColor="#ffffff"
+                    android:id="@+id/edt_critical"
+                    android:hint="critical point"
+                    android:layout_marginTop="20dp"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
+
+                <Button
+                    android:text="save"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/btn_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

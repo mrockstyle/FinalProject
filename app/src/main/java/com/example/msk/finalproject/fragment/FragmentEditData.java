@@ -2,6 +2,7 @@ package com.example.msk.finalproject.fragment;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -153,10 +154,24 @@ public class FragmentEditData extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btn_save){
-            progressDialog.setMessage("Saving Data");
-            progressDialog.show();
-            writeLocationInfoData();
+            showDialogBox();
         }
+    }
+
+    private void showDialogBox() {
+        ad = new AlertDialog.Builder(getContext());
+        ad.setTitle("Attention");
+        ad.setMessage("Are you sure to save ?");
+        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                progressDialog.setMessage("Saving Data");
+                progressDialog.show();
+                writeLocationInfoData();
+            }
+        });
+        ad.setNegativeButton("No", null);
+        ad.show();
     }
 
     @Override

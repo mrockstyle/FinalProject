@@ -17,7 +17,7 @@ public class Constant {
 
 
     //URL
-    public static final String URL = "http://192.168.1.4/water/";
+    public static final String URL = "http://192.168.1.2/water/";
     public static final String URL_LOGIN = "checklogin.php";
     public static final String URL_REGISTER = "register.php";
     public static final String URL_UPDATE_RESOURCE = "update_resource.php";
@@ -37,6 +37,16 @@ public class Constant {
     public static final String URL_ACS_RUNNER = "acsRunner.php";
     public static final String URL_GET_POLYLINE_BY_ID = "getPolylineByID.php";
     public static final String URL_GET_CONTAIN_BY_USERID = "getContainUserPath.php";
+    public static final String URL_UPDATE_USER_ADDRESS = "updateUserAddress.php";
+
+    //URL for Final Project
+    public static final String URL_WATERFINAL_LOCATION_INFO = "waterfinal_location4map.php";
+    public static final String URL_WATERFINAL_GET_USERS_HOME = "waterfinal_getUsersHome.php";
+    public static final String URL_WATERFINAL_SAFEPLACE = "waterfinal_safeplace4map.php";
+    public static final String URL_WATERFINAL_ACS_RUNNER = "waterfinal_acsRunner.php";
+    public static final String URL_WATERFINAL_GET_POLYLINE = "waterfinal_getPolyline.php";
+    public static final String URL_WATERFINAL_GET_CONTAIN = "waterfinal_getContain.php";
+
 
 
     //URL Google
@@ -45,6 +55,7 @@ public class Constant {
     public static final String DISTANCE_TEST = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=13.740938,100.794866&destinations=13.727626,100.772356&key=AIzaSyAjK7thv7v8tTXNfVEFN8KLX1W3BTksqGM";
     public static final String URL_GOOGLE_ELEVATION = "https://maps.googleapis.com/maps/api/elevation/json?";
     public static final String URL_GOOGLE_DIRECTION = "https://maps.googleapis.com/maps/api/directions/json?";
+    public static final String URL_GOOGLE_GEOCODING = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 
 
     //User Preference

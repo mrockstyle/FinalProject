@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
     //private TextView tvdataNow,tvNormal,tvAlert,tvCritical,tvDate,tvMonitor;
     //private TextView tvdataNow;
     private WaveLoadingView waveLoadingView;
+    private ImageView imgImage;
 
 
     //Timer
@@ -96,7 +98,6 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
         // Init Fragment level's variable(s) here
         worldlist = new ArrayList<>();
         arrayname = new ArrayList<>();
-
     }
 
 
@@ -112,6 +113,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
         initDropdown();
         span.setOnItemSelectedListener(this);
         waveLoadingView = rootView.findViewById(R.id.waveLoadingView);
+        imgImage = rootView.findViewById(R.id.img_Image);
 
         //tvdataNow = rootView.findViewById(R.id.tv_dataNow);
 
@@ -151,6 +153,12 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
 
         Object item = adapterView.getItemAtPosition(position);
+
+        if (position == 0){
+            imgImage.setImageResource(R.drawable.wat);
+        }else if (position == 1){
+            imgImage.setImageResource(R.drawable.lamplatil);
+        }
 
         label = item.toString();
 
@@ -251,7 +259,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
 
             data = new JSONArray(HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_WATER_LEVEL_INFO, params_table));
 
-            Log.i("Value",""+data);
+            //Log.i("Value",""+data);
 
             final ArrayList<HashMap<String, String>> MyArrList = new ArrayList<HashMap<String, String>>();
             HashMap<String, String> map;
@@ -423,7 +431,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
     public void realtime_data_two() {
 
 
-        Log.d("data", "realtime_data_two");
+        //Log.d("data", "realtime_data_two");
 
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -512,7 +520,7 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i("Value","OnDestroy");
+        //Log.i("Value","OnDestroy");
         time.cancel();
     }
 

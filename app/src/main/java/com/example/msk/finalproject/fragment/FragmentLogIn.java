@@ -124,7 +124,11 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
             transaction.commit();
         }
         else if (v.getId() == R.id.BtnSignIn){
+            //showProgressDialog
+            progressDialog.setMessage("Logging in");
+            progressDialog.show();
             checkLogin(EdtEmail.getText().toString(), EdtPassword.getText().toString());
+
         }
     }
 
@@ -149,9 +153,9 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
             EdtPassword.setError(null);
         }
 
-        //showProgressDialog();
-        progressDialog.setMessage("Logging in");
-        progressDialog.show();
+
+
+
 
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("strUser", email));
@@ -165,6 +169,8 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
          * Eg Login Failed = {"StatusID":"0","MemberID":"0","Error":"Incorrect Username and Password"}
          * Eg Login Complete = {"StatusID":"1","MemberID":"2","Error":""}
          */
+
+
 
         String resultServer = HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_LOGIN, params);
 
@@ -220,9 +226,15 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
     }
 
     private void LoginSuccess() {
-
+        getActivity().finish();
         Intent intent = new Intent(getContext(), MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
 
     @Override

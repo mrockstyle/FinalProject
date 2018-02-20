@@ -1,0 +1,73 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/Tab_Report_EX_year"
+    android:background="#eeeeee">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top" >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="71dp">
+
+                <FrameLayout
+                    android:layout_width="258dp"
+                    android:layout_height="47dp"
+                    android:layout_gravity="center_horizontal|top"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:focusable="false"
+                    android:measureAllChildren="false"
+                    android:longClickable="false"
+                    android:touchscreenBlocksFocus="false"
+                    android:transitionGroup="false"
+                    android:outlineProvider="paddedBounds"
+                    android:background="@drawable/shape"
+                    android:layout_marginTop="10dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Location :"
+                        android:id="@+id/textView19"
+                        android:textSize="17dp"
+                        android:layout_gravity="left|center_vertical" />
+
+                    <Spinner
+                        android:layout_width="169dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ex_spinner_location_year"
+                        android:layout_gravity="right|center_vertical" />
+                </FrameLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="435dp"
+            android:layout_gravity="center_horizontal|bottom" >
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/ex_listView_report_year"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_margin="10dp" />
+        </FrameLayout>
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,8 +1,10 @@
 package com.example.msk.finalproject.controller;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -20,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,10 +31,13 @@ import com.example.msk.finalproject.R;
 import com.example.msk.finalproject.dao.LocationInfo;
 import com.example.msk.finalproject.dao.SafePlace;
 import com.example.msk.finalproject.dao.UserHome;
+import com.example.msk.finalproject.fragment.FragmentCompareAlgo;
 import com.example.msk.finalproject.fragment.FragmentEditData;
+import com.example.msk.finalproject.fragment.FragmentEditProfile;
 import com.example.msk.finalproject.fragment.FragmentMap;
 import com.example.msk.finalproject.fragment.FragmentReport;
 import com.example.msk.finalproject.fragment.FragmentWaterLevel;
+import com.example.msk.finalproject.fragment.FragmentWaterReport;
 import com.example.msk.finalproject.manager.HttpManager;
 import com.example.msk.finalproject.util.DataParser;
 import com.example.msk.finalproject.util.GetData;
@@ -41,8 +47,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
-import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
-import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
+import com.inthecheesefactory.thecheeselibrary.manager.Contextor;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -88,15 +93,21 @@ public class MainActivity extends AppCompatActivity {
     //Proximity
     private ProximityIntentReceiver proximityIntentReceiver;
 
+    //context
+    private Context mContext;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mContext = Contextor.getInstance().getContext();
+
         init();
         initProximity(); // สร้างขอบเขตนับคน
-        initDistance();
-        initSafePlaceDistance();
+        //initDistance();
+        //initSafePlaceDistance();
 
         if (savedInstanceState == null) {
             selectItem(0);
@@ -272,17 +283,18 @@ public class MainActivity extends AppCompatActivity {
             public void onDrawerClosed(View view) {
                 getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                Log.i("Title","mTitle : "+mTitle);
+                //Log.i("Title","mTitle : "+mTitle);
             }
 
             public void onDrawerOpened(View drawerView) {
                 getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                Log.i("Title","mDrawTitle : "+mDrawerLayout);
+                //Log.i("Title","mDrawTitle : "+mDrawerLayout);
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
+
 
 
     /* The click listner for ListView in the navigation drawer */
@@ -309,18 +321,27 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 2 : getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.mainContainer, FragmentEditData.newInstance())
+                        .replace(R.id.mainContainer, FragmentWaterReport.newInstance())
                         .commit();
                     break;
                 case 3 : getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.mainContainer, FragmentReport.newInstance())
+                        .replace(R.id.mainContainer, FragmentEditData.newInstance())
                         .commit();
                     break;
-                case 4 : signOut();
-                    finish();
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    startActivity(intent);
+
+                case 4 : getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer, FragmentEditProfile.newInstance())
+                        .commit();
+                    break;
+                case 5 : getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer, FragmentCompareAlgo.newInstance())
+                        .commit();
+                    break;
+                case 6 : showDialogBox(); //sign out
+
                     break;
             }
         }else {
@@ -337,13 +358,16 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 2 : getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.mainContainer, FragmentReport.newInstance())
+                        .replace(R.id.mainContainer, FragmentWaterReport.newInstance())
                         .commit();
                     break;
-                case 3 : signOut();
-                    finish();
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    startActivity(intent);
+                case 3 : getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer, FragmentEditProfile.newInstance())
+                        .commit();
+                    break;
+                case 4 :
+                    showDialogBox(); //sign out
                     break;
             }
         }
@@ -352,6 +376,23 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setItemChecked(position, true);
         setTitle(Menu[position]);
         mDrawerLayout.closeDrawer(menuDrawerlayout);
+    }
+
+    private void showDialogBox() {
+        ad = new AlertDialog.Builder(this);
+        ad.setTitle("Attention");
+        ad.setMessage("Are you sure to sign out ?");
+        ad.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                signOut();
+                finish();
+                Intent intent = new Intent(mContext, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+        ad.setNegativeButton("No",null);
+        ad.show();
     }
 
 

@@ -1,0 +1,132 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/Tab_Report_month"
+    android:background="#e1e1e1" >
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <FrameLayout
+            android:background="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal|top">
+
+            <FrameLayout
+                android:background="#FE8989"
+                android:layout_width="match_parent"
+                android:layout_height="35dp">
+
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="left|center"
+                    android:src="@drawable/path"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp" />
+
+
+                <TextView
+                    android:layout_marginLeft="40dp"
+                    android:layout_gravity="center|left"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    android:text="Location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:id="@+id/spinner_location_month"
+                android:layout_gravity="bottom" />
+
+
+        </FrameLayout>
+
+    <LinearLayout
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal|bottom" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="47dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:focusable="false"
+                android:measureAllChildren="false"
+                android:longClickable="false"
+                android:touchscreenBlocksFocus="false"
+                android:transitionGroup="false"
+                android:outlineProvider="paddedBounds"
+                android:background="@drawable/shape" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Month :"
+                    android:id="@+id/Month"
+                    android:textSize="15dp"
+                    android:layout_gravity="left|center_vertical" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="60dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center|right" >
+
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="160dp"
+                        android:id="@+id/spinner_month_one"
+                        android:layout_gravity="left|center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Year :"
+                        android:id="@+id/Year"
+                        android:layout_gravity="center" />
+
+                    <Spinner
+                        android:layout_marginLeft="166dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinner_month_two"
+                        android:layout_gravity="right|center_vertical" />
+                </FrameLayout>
+            </FrameLayout>
+        </FrameLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listView_report_month"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_margin="10dp" />
+
+    </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

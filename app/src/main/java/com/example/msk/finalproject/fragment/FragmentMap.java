@@ -41,11 +41,13 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Cap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.PolyUtil;
 
@@ -219,13 +221,14 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(safePlaceList.get(i).getLat(),safePlaceList.get(i).getLng()))
                     .title(safePlaceList.get(i).getSafeName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.safe_place))
                     .snippet(String.valueOf(safePlaceList.get(i).getContain())));
         }
 
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(userHome.getLat(),userHome.getLng()))
                 .title(userHome.getAddressName())
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.home_icon)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.home)));
 
         //mMap.setOnMarkerClickListener(this);
 
@@ -450,7 +453,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         Integer value = null; //ไว้เก็บ node ที่เลือก
 
         for (int i = 1; i < path.length()-1; i++){
-            if (contain.get(i-1) > 28){ //แต่ละที่ห้ามเกิน 30 คน แต่เผื่อไว้ 28 ให้เปลี่ยนเส้นทาง
+            if (contain.get(Integer.parseInt(String.valueOf(path.charAt(i)))-1) > 28){ //แต่ละที่ห้ามเกิน 30 คน แต่เผื่อไว้ 28 ให้เปลี่ยนเส้นทาง
                 continue;
             }else {
                 value = Integer.parseInt(String.valueOf(path.charAt(i)));
@@ -459,7 +462,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             }
         }
 
-        Log.i("Value","Polyline = "+polylineStr);
+        //Log.i("Value","Polyline = "+polylineStr);
+
+
+        //display polyline
 
         if (polylineStr != null){
             if (polyline != null){
@@ -469,6 +475,9 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             polyline = mMap.addPolyline(new PolylineOptions()
                     .color(Color.BLUE)
                     .width(10)
+                    .startCap(new RoundCap())
+                    .endCap(new RoundCap())
+                    .zIndex(5)
                     .addAll(PolyUtil.decode(polylineStr)));
         }
     }
