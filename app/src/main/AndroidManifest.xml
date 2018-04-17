@@ -58,6 +58,7 @@
         <receiver android:name=".util.ProximityIntentReceiver" />
 
         <activity android:name=".controller.EvacuateMapActivity" />
+        <activity android:name=".controller.EditProfileActivity"></activity>
     </application>
 
 </manifest>

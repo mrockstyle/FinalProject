@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.msk.finalproject.R;
 import com.example.msk.finalproject.controller.Constant;
+import com.example.msk.finalproject.controller.MainActivity;
 import com.example.msk.finalproject.manager.HttpManager;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -164,14 +165,25 @@ public class FragmentEditProfile extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 updateDatabase();
+                // ถ้า log in ครั้งแรก save เสร็จให้ไปที่หน้า Main
+                if (preferences.getBoolean(Constant.IS_FIRST_TIME,true)){
+                    getActivity().finish();
+                    Intent intent = new Intent(getContext(), MainActivity.class);
+                    startActivity(intent);
+                }
             }
         });
+        ad.setNegativeButton("No",null);
         ad.show();
     }
 
     private void updateDatabase() {
         params = new ArrayList<>();
         params.add(new BasicNameValuePair("userID",String.valueOf(userID)));
+        params.add(new BasicNameValuePair("isFirstTime",String.valueOf(0)));
+        params.add(new BasicNameValuePair("lat",String.valueOf(lat)));
+        params.add(new BasicNameValuePair("lng",String.valueOf(lng)));
+        params.add(new BasicNameValuePair("addressName",edtAddress.getText().toString()));
         progressDialog.setMessage("Saving...");
         progressDialog.show();
 
@@ -180,6 +192,7 @@ public class FragmentEditProfile extends Fragment implements OnMapReadyCallback,
 
         try {
             String result = HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_UPDATE_USER_ADDRESS,params); // update address
+            Log.i("value","result = "+result);
             resultObj = new JSONObject(result);
             status = resultObj.getInt("StatusID");
 

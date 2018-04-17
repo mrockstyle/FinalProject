@@ -397,6 +397,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         params = new ArrayList<>();
         params.add(new BasicNameValuePair("userIDpath",String.valueOf(userID)));
 
+
         JSONArray jsonArray=null;
         JSONObject jsonObject=null;
         try {

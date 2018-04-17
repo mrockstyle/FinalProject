@@ -46,6 +46,7 @@ public class NotificationService extends Service {
     private Boolean available = true,isCountDown = false;
     private Boolean available2 = true,isCountDown2 = false;
     private Context mContext;
+    private Integer locationID;
 
     @Nullable
     @Override
@@ -150,7 +151,7 @@ public class NotificationService extends Service {
 
                     location_notifi.add(le.getString("location_name"));
 
-
+                    locationID = le.getInt("locationID");
 
                     check_one = true;
 
@@ -159,7 +160,7 @@ public class NotificationService extends Service {
 
                     location_notifi_two.add(le.getString("location_name"));
 
-
+                    locationID = le.getInt("locationID");
 
                     check_two = true;
                 }
@@ -217,6 +218,7 @@ public class NotificationService extends Service {
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.setAction("action");
             intent.putExtra("key","from notification");
+            intent.putExtra("locationID",locationID);
             sendBroadcast(intent);
 
             available = false;

@@ -191,27 +191,6 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
     private void timerTick() {
         Log.d("data", "timerTick");
 
-        /*while (true) {
-            try {
-                Thread.sleep(1000*60);
-
-            }catch (InterruptedException e) {
-                Toast.makeText(getActivity().getApplicationContext(), "Default Signature Fail", Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
-            if(getActivity() == null)
-                return;
-
-
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    realtime_data_two();
-                }
-            });
-        }*/
-
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -521,7 +500,10 @@ public class FragmentWaterLevel extends Fragment implements AdapterView.OnItemSe
     public void onDestroy() {
         super.onDestroy();
         //Log.i("Value","OnDestroy");
-        time.cancel();
+        if (time != null){
+            time.cancel();
+        }
+
     }
 
     @Override

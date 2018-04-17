@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.msk.finalproject.R;
 import com.example.msk.finalproject.controller.Constant;
+import com.example.msk.finalproject.controller.EditProfileActivity;
 import com.example.msk.finalproject.controller.MainActivity;
 import com.example.msk.finalproject.manager.HttpManager;
 
@@ -58,6 +59,7 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
     private String strError = "Unknow User!";
     private Integer intUserID = 0;
     private Integer intIsAdmin = 0;
+    private int isFirstTime = 0;
 
     private SharedPreferences preferences;
 
@@ -183,6 +185,7 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
             strLastname = c.getString("lastname");
             strError = c.getString("Error");
             intIsAdmin = c.getInt("isAdmin");
+            isFirstTime = c.getInt("isFirstTime");
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -222,13 +225,25 @@ public class FragmentLogIn extends Fragment implements View.OnClickListener {
         }
         editor.putBoolean(Constant.IS_LOGGED_IN,true);
         editor.putBoolean(Constant.IS_ENTERED,false);
+        if (isFirstTime == 1){
+            editor.putBoolean(Constant.IS_FIRST_TIME,true);
+        }else {
+            editor.putBoolean(Constant.IS_FIRST_TIME,false);
+        }
         editor.apply();
     }
 
     private void LoginSuccess() {
-        getActivity().finish();
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        startActivity(intent);
+
+        if (isFirstTime == 1){ // ถ้า user คนนี้ login ครั้งแรก
+            getActivity().finish();
+            Intent intent = new Intent(getContext(), EditProfileActivity.class);
+            startActivity(intent);
+        }else {
+            getActivity().finish();
+            Intent intent = new Intent(getContext(), MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

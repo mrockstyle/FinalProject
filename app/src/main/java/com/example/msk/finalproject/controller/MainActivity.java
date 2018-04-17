@@ -41,6 +41,7 @@ import com.example.msk.finalproject.fragment.FragmentWaterReport;
 import com.example.msk.finalproject.manager.HttpManager;
 import com.example.msk.finalproject.util.DataParser;
 import com.example.msk.finalproject.util.GetData;
+import com.example.msk.finalproject.util.GetData2;
 import com.example.msk.finalproject.util.Notification.NotificationService;
 import com.example.msk.finalproject.util.ProximityIntentReceiver;
 import com.google.android.gms.maps.model.LatLng;
@@ -86,9 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Object
     private List<SafePlace> safePlaceList;
+    private List<LocationInfo> locationInfoList;
     private UserHome userHome;
-    private GetData getData;
+    private GetData2 getData2;
     private List<NameValuePair> params;
+    private List<Double> distanceList;
 
     //Proximity
     private ProximityIntentReceiver proximityIntentReceiver;
@@ -119,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         getUserPref(); //อ่านข้อมูล user ที่ login ไว้
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar); //set ให้ actionbar กลายเป็น toolbar
-        //flowingDrawer = findViewById(R.id.drawerlayout);
         createDrawerLayout();
 
         startService(new Intent(this, NotificationService.class)); // เริ่ม service การแจ้งเตือนระดับน้ำ
@@ -147,21 +149,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDistance() {
         getUserHomeData(); // load user data form server
-
+        distanceList = new ArrayList<>();
         //cal distance
-        for (int i=0 ; i < safePlaceList.size(); i++){
-            String directionList;
-            Double distance;
-            params = new ArrayList<>();
-            String directionString = HttpManager
-                    .getInstance().getHttpPost(Constant.URL_GOOGLE_DIRECTION+"origin="+userHome.getLat()+","+userHome.getLng()
-                            +"&destination="+safePlaceList.get(i).getLat()+","+safePlaceList.get(i).getLng()+"&mode=walking&key="+Constant.GOOGLE_MAP_KEY,params);
+        for (int i=0 ; i < locationInfoList.size(); i++){
 
-            DataParser dataParser = new DataParser();
-            directionList = dataParser.parseDirections(directionString);
-            distance = dataParser.getDistance(directionString);
-            updatePath(directionList,safePlaceList.get(i).getSafeID(),distance,userID);
+            distanceList.add(SphericalUtil.computeDistanceBetween(
+                    new LatLng(userHome.getLat(),userHome.getLng())
+                    ,new LatLng(locationInfoList.get(i).getLat(),locationInfoList.get(i).getLng())));
+
         }
+
+        Log.i("Value","distanceList = "+distanceList);
     }
 
     private void initSafePlaceDistance() {
@@ -177,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
 
                     DataParser dataParser = new DataParser();
                     polylines = dataParser.parseDirections(directionString);
-                    distance = dataParser.getDistance(directionString);
-                    updateSafePath(safePlaceList.get(i).getSafeID(),safePlaceList.get(j).getSafeID(),distance,polylines);
+                    //distance = dataParser.getDistance(directionString);
+                    //updateSafePath(safePlaceList.get(i).getSafeID(),safePlaceList.get(j).getSafeID(),distance,polylines);
                     //Log.i("Path","("+safePlaceList.get(i).getSafeID()+","+safePlaceList.get(j).getSafeID()+") = "+distance);
                 }
             }
@@ -208,9 +206,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getUserHomeData() {
-        getData = new GetData();
-        getData.setUserHomeData(userID);
-        userHome = getData.getUserHome();
+        getData2 = new GetData2();
+        getData2.setUserHomeData(userID);
+        getData2.setLocationData();
+        userHome = getData2.getUserHome();
+        locationInfoList = getData2.getLocationInfosList();
     }
 
 
@@ -228,9 +228,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getSafePlaceData() {
-        getData = new GetData();
-        getData.setSafePlaceData();
-        safePlaceList = getData.getSafePlaceList();
+        getData2 = new GetData2();
+        getData2.setSafePlaceData();
+        safePlaceList = getData2.getSafePlaceList();
     }
 
     private void getUserPref() {

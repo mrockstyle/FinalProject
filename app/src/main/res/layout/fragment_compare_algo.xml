@@ -4,30 +4,58 @@
     android:layout_height="match_parent">
 
 
-    <LinearLayout
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/btn_dijkstra"
-            android:text="Dijkstra"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btn_acs"
-            android:text="ACS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-
-    </LinearLayout>
-
     <com.google.android.gms.maps.MapView
+        android:layout_weight="7"
         android:id="@+id/mapAlgo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"/>
+
+    <RelativeLayout
+        android:padding="10dp"
+        android:background="#90000000"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+
+        <TextView
+            android:id="@+id/tv_evacuate"
+            android:textColor="#ffffff"
+            android:layout_alignParentRight="true"
+            android:text="ควรอพยพภายใน"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_path"
+            android:text="XX"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_path_detail"
+            android:textColor="#ffffff"
+            android:text="XX"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:textColor="#ffffff"
+            android:text="XX"
+            android:layout_marginRight="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignBottom="@id/tv_evacuate"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </RelativeLayout>
+
 
 </LinearLayout>

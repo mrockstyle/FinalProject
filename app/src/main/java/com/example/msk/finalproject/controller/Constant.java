@@ -17,16 +17,13 @@ public class Constant {
 
 
     //URL
-    public static final String URL = "http://192.168.1.2/water/";
+    public static final String URL = "http://192.168.1.9/water/";
     public static final String URL_LOGIN = "checklogin.php";
     public static final String URL_REGISTER = "register.php";
     public static final String URL_UPDATE_RESOURCE = "update_resource.php";
     public static final String URL_LOCATION_INFO = "location4map.php";
     public static final String URL_SAFEPLACE = "safeplace4map.php";
-    public static final String URL_WRITE_ELEVATION_DATA = "writeElevationData.php";
     public static final String URL_GET_USERS_HOME = "getUsersHome.php";
-    public static final String URL_SEND_DISTANCE = "sendDistance.php";
-    public static final String URL_SEND_DISTANCE_USER = "sendDistanceUser.php";
     public static final String URL_WATER_LEVEL_INFO = "waterlvinfo_data.php";
     public static final String URL_DROP_LIST = "droplist.php";
     public static final String URL_GET_CONTAIN = "getContainInSafePlace.php";
@@ -43,10 +40,13 @@ public class Constant {
     public static final String URL_WATERFINAL_LOCATION_INFO = "waterfinal_location4map.php";
     public static final String URL_WATERFINAL_GET_USERS_HOME = "waterfinal_getUsersHome.php";
     public static final String URL_WATERFINAL_SAFEPLACE = "waterfinal_safeplace4map.php";
-    public static final String URL_WATERFINAL_ACS_RUNNER = "waterfinal_acsRunner.php";
+    public static final String URL_WATERFINAL_ACS_RUNNER = "waterfinal_acsRunnerPy.php";
     public static final String URL_WATERFINAL_GET_POLYLINE = "waterfinal_getPolyline.php";
     public static final String URL_WATERFINAL_GET_CONTAIN = "waterfinal_getContain.php";
-
+    public static final String URL_WATERFINAL_GET_WATER_FLOW = "waterfinal_getLastestWaterFlowData.php";
+    public static final String URL_WATERFINAL_DELETE_PATH = "waterfinal_deletePathByID.php";
+    public static final String URL_WATERFINAL_UPDATE_PATH = "waterfinal_updatePath.php";
+    public static final String URL_WATERFIANL_GET_SHORTEST_PATH = "waterfinal_getShortestPath.php";
 
 
     //URL Google
@@ -68,5 +68,6 @@ public class Constant {
     public static final String IS_LOGGED_IN = "isLoggedIn";
     public static final String IS_ALERT = "isAlert";
     public static final String IS_ENTERED = "isEnter";
-
+    public static final String LOCATION_ID = "locationID"; // location ID ที่ alert
+    public static final String IS_FIRST_TIME = "isFirstTime";
 }

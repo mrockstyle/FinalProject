@@ -133,6 +133,7 @@ public class FragmentSignUp extends Fragment implements View.OnClickListener {
         params.add(new BasicNameValuePair("lastname", lname));
         params.add(new BasicNameValuePair("tel", tel));
         params.add(new BasicNameValuePair("isAdmin",String.valueOf(isAdmin)));
+        params.add(new BasicNameValuePair("isFirstTime",String.valueOf(1)));
 
         //sendUserData
         String resultServer  = HttpManager.getInstance().getHttpPost(Constant.URL+Constant.URL_REGISTER,params);

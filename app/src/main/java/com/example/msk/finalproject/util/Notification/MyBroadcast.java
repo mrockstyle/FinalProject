@@ -21,9 +21,9 @@ public class MyBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i("Value","critical!!!");
+        Log.i("Value","critical!!! from "+intent.getIntExtra("locationID",0));
 
-        updatePref(context);//เพิ่มสถานะ user ว่าเกิด alert แล้วนะ
+        updatePref(context,intent);//เพิ่มสถานะ user ว่าเกิด alert แล้วนะ
 
 
         Intent mIntent = new Intent(context, EvacuateMapActivity.class);
@@ -32,10 +32,11 @@ public class MyBroadcast extends BroadcastReceiver {
 
     }
 
-    private void updatePref(Context context) {
+    private void updatePref(Context context,Intent intent) {
         preferences = context.getSharedPreferences(Constant.USER_PREF,0);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(Constant.IS_ALERT,true);
+        editor.putInt(Constant.LOCATION_ID,intent.getIntExtra("locationID",0));
         editor.apply();
     }
 }
